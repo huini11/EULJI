@@ -1,0 +1,21 @@
+# 构建产物 / 缓存（体积大且可再生）
+.gradle/
+.idea/
+*.iml
+local.properties
+app/build/
+build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# 系统 / 编辑器
+.DS_Store
+Thumbs.db
+*.swp
+
+# 日志与临时
+*.log
+*.tmp
+
+# 注意：dist/*.apk、docs/*.png、samples/*.png 为交付物，需随仓库分享，不忽略

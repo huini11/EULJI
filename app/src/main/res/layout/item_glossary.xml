@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingTop="5dp"
+    android:paddingBottom="5dp">
+
+    <EditText
+        android:id="@+id/etKo"
+        style="@style/InputBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:focusableInTouchMode="true"
+        android:hint="韩文"
+        android:inputType="text"
+        android:textSize="13sp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:text="→"
+        android:textColor="@color/text_sub"
+        android:textSize="13sp" />
+
+    <EditText
+        android:id="@+id/etZh"
+        style="@style/InputBox"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.25"
+        android:hint="中文"
+        android:inputType="text"
+        android:textSize="13sp" />
+
+    <TextView
+        android:id="@+id/tvDel"
+        android:layout_width="34dp"
+        android:layout_height="40dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:text="✕"
+        android:textColor="#B0B7C3"
+        android:textSize="14sp" />
+</LinearLayout>
