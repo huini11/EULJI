@@ -4,6 +4,14 @@
 
 ---
 
+## 下载安装包
+
+- **直接下载 APK**：[dist/HanScreen-v1.1-arm64.apk](dist/HanScreen-v1.1-arm64.apk)（34 MB，arm64，一加 ACE 5 适用）
+- 或在本仓库页面点 `dist` 目录 → `HanScreen-v1.1-arm64.apk` → Download raw
+- 源码完整，可用 Android Studio 直接构建（需自行填写 `local.properties` 的 `sdk.dir`）
+
+---
+
 ## 一、它解决什么问题
 
 韩文 App（购物、社交、游戏、工具）几乎没有中文版。传统做法是「截图 → 切到翻译 App → 粘贴 → 看完切回来」，一次至少 20 秒。
