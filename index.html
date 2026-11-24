@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html data-page-node-id="DwNO7W8HkoDhXSIARXPvvw" lang="en"><head data-page-node-id="ON1qvVrfDzRLZh6lY5J3C7">
+  <meta data-page-node-id="7BnckvF4eVwMa6IHeMuFkG" charset="UTF-8">
+  <meta data-page-node-id="h5LH7fD3aBk4szlIzNqNhu" name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta data-page-node-id="oDyiN2Z0r4oHFYNW2zIYpH" name="theme-color" content="#eef2ef">
+  <link data-page-node-id="8b2cdTgABcQBuqPrnIoAf4" rel="icon" type="image/svg+xml" href="assets/brand/favicon.svg">
+  <title data-page-node-id="jg4chcAHxRhtsr8Vx2ryOP" data-pnid-children="JawLSvEgFOl4ngwKHgDd8Q">AI Agent in Practice | HU CHAO</title>
+  <style data-page-node-id="pHQBcLzC7kZjDToSwbHFXr" data-pnid-children="6vaiJTMpKwLDPMZLNtGBJO">
+    :root {
+      --paper: #f6f8f5;
+      --paper-2: #edf2ee;
+      --ink: #111a17;
+      --muted: #65716c;
+      --line: rgba(17, 26, 23, .13);
+      --green: #08a887;
+      --green-dark: #087b65;
+      --mint: #c9f3df;
+      --blue: #6478e8;
+      --orange: #d97757;
+      --dark: #101815;
+      --dark-2: #18231f;
+      --white: #ffffff;
+      --scale: 1;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; }
+    body {
+      font-family: Inter, "SF Pro Display", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+      background: #dfe6e1;
+      color: var(--ink);
+      -webkit-font-smoothing: antialiased;
+    }
+    button, input { font: inherit; }
+    button { color: inherit; }
+    img { display: block; max-width: 100%; }
+    a { color: inherit; }
+    .viewport { position: fixed; inset: 0; overflow: hidden; }
+    .stage {
+      position: absolute;
+      left: 50%; top: 50%;
+      width: 1600px; height: 900px;
+      transform: translate(-50%, -50%) scale(var(--scale));
+      transform-origin: center;
+      background: var(--paper);
+      box-shadow: 0 30px 90px rgba(20, 38, 30, .18);
+      overflow: hidden;
+    }
+    .slide {
+      position: absolute; inset: 0;
+      padding: 68px 78px 62px;
+      background: var(--paper);
+      opacity: 0; visibility: hidden;
+      transform: translateY(14px);
+      transition: opacity .35s ease, transform .35s ease, visibility .35s;
+      overflow: hidden;
+    }
+    .slide.active { opacity: 1; visibility: visible; transform: translateY(0); z-index: 2; }
+    .slide.dark { background: var(--dark); color: #f4f7f5; }
+    .slide-meta {
+      position: absolute; left: 78px; right: 78px; bottom: 25px;
+      display: flex; justify-content: space-between; align-items: center;
+      font-size: 14px; letter-spacing: .13em; text-transform: uppercase;
+      opacity: .52; pointer-events: none;
+    }
+    .eyebrow {
+      display: flex; align-items: center; gap: 12px;
+      color: var(--green-dark); font-size: 16px; font-weight: 750;
+      letter-spacing: .16em; text-transform: uppercase; margin-bottom: 20px;
+    }
+    .dark .eyebrow { color: #73e1c2; }
+    .eyebrow::before { content: ""; width: 28px; height: 3px; border-radius: 3px; background: currentColor; }
+    h1, h2, h3, p { margin: 0; }
+    h1 { font-size: 96px; line-height: 1.03; letter-spacing: -.055em; font-weight: 800; }
+    h2 { font-size: 52px; line-height: 1.14; letter-spacing: -.035em; font-weight: 780; }
+    h3 { font-size: 27px; line-height: 1.3; letter-spacing: -.015em; }
+    .subtitle { color: var(--muted); font-size: 25px; line-height: 1.55; }
+    .dark .subtitle { color: #a9b7b0; }
+    .lead { font-size: 29px; line-height: 1.55; color: #34433d; }
+    .dark .lead { color: #b7c4be; }
+    .small { font-size: 17px; line-height: 1.6; color: var(--muted); }
+    .dark .small { color: #9faea7; }
+    .accent { color: var(--green); }
+    .rule { height: 1px; background: var(--line); margin: 26px 0; }
+    .dark .rule { background: rgba(255,255,255,.13); }
+    .chip {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 9px 15px; border: 1px solid var(--line); border-radius: 999px;
+      font-size: 16px; font-weight: 650; color: #3c4a44; background: rgba(255,255,255,.5);
+    }
+    .dark .chip { color: #d5dfda; border-color: rgba(255,255,255,.16); background: rgba(255,255,255,.04); }
+    .chip.green { background: #e0f6ec; border-color: #bce9d7; color: #08765f; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; }
+    .card {
+      background: rgba(255,255,255,.72); border: 1px solid var(--line);
+      border-radius: 26px; padding: 28px;
+    }
+    .card.flat { background: transparent; }
+    .number { font-variant-numeric: tabular-nums; }
+    .icon-circle {
+      width: 54px; height: 54px; border-radius: 17px; display: grid; place-items: center;
+      background: #e1f5ec; color: var(--green-dark); font-size: 22px; font-weight: 800;
+    }
+    .primary-btn, .ghost-btn {
+      border: 0; border-radius: 15px; padding: 15px 22px; cursor: pointer;
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      font-size: 18px; font-weight: 720; transition: transform .2s, background .2s;
+    }
+    .primary-btn { background: var(--ink); color: white; }
+    .primary-btn:hover { transform: translateY(-2px); background: #22332c; }
+    .ghost-btn { background: #e8eeea; color: var(--ink); }
+    .ghost-btn:hover { background: #dce6e0; }
+    .image-frame { border-radius: 26px; overflow: hidden; border: 1px solid var(--line); background: white; }
+    /* Token concept */
+    .token-intro { display: grid; grid-template-columns: 52% 44%; gap: 4%; align-items: center; height: 100%; }
+    .token-copy h2 { font-size: 60px; line-height: 1.2; margin: 18px 0 24px; }
+    .token-copy .lead { font-size: 22px; line-height: 1.65; color: #3c4a43; }
+    .token-copy .lead b { color: var(--ink); }
+    .token-quote { margin-top: 30px; padding: 18px 22px; border-left: 4px solid var(--green); background: #eef5f0; border-radius: 0 16px 16px 0; font-size: 21px; line-height: 1.6; }
+    .token-visual { height: 640px; border-radius: 28px; overflow: hidden; border: 1px solid var(--line); background: #f4efe6; box-shadow: 0 22px 50px rgba(35,52,42,.1); }
+    .token-visual img { width: 100%; height: 100%; object-fit: cover; object-position: center; }
+
+    /* Token practical */
+    .token-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 30px; }
+    .token-card { border-radius: 22px; padding: 22px 26px; border: 1px solid var(--line); background: white; }
+    .token-card.cost { background: #fdf4ef; border-color: #f0dcd0; }
+    .token-card.save { background: #eef8f2; border-color: #cfe7d8; }
+    .token-card h3 { font-size: 23px; margin-bottom: 14px; }
+    .token-card ul { margin: 0; padding-left: 20px; }
+    .token-card li { font-size: 16px; line-height: 1.55; color: #3f4b44; margin-bottom: 8px; }
+    .token-card li b { color: var(--ink); }
+    .num { display: inline-block; color: var(--green); font-size: .72em; font-weight: 800; letter-spacing: .04em; margin-right: 10px; vertical-align: .08em; font-variant-numeric: tabular-nums; }
+    .caption { font-size: 15px; line-height: 1.5; color: var(--muted); margin-top: 10px; }
+
+    /* Cover */
+    .cover { padding: 0; background: #eef2ee; }
+    .cover-grid { display: grid; grid-template-columns: 61% 39%; height: 100%; }
+    .cover-copy { padding: 78px 40px 64px 82px; position: relative; z-index: 2; }
+    .cover-kicker { display: flex; align-items: center; gap: 14px; font-size: 17px; letter-spacing: .18em; font-weight: 750; color: var(--green-dark); }
+    .cover-kicker img { width: 38px; height: 38px; }
+    .cover-title { margin-top: 178px; }
+    .cover-title .en { display: block; font-size: 27px; letter-spacing: .18em; color: var(--muted); margin-bottom: 18px; font-weight: 650; }
+    .cover-title h1 { font-size: 106px; }
+    .cover-sub { margin-top: 28px; font-size: 29px; line-height: 1.5; color: #40514a; }
+    .cover-tags { display: flex; gap: 12px; margin-top: 34px; flex-wrap: wrap; }
+    .cover-person { position: absolute; left: 82px; bottom: 65px; display: flex; align-items: center; gap: 22px; }
+    .cover-person .line { width: 46px; height: 2px; background: var(--green); }
+    .cover-person strong { display: block; font-size: 23px; letter-spacing: .08em; }
+    .cover-person span { display: block; color: var(--muted); font-size: 18px; margin-top: 5px; }
+    .cover-photo { position: relative; overflow: hidden; background: #4b555a; }
+    .cover-photo img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 32%; }
+    .cover-photo::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, rgba(238,242,238,.18), transparent 25%); pointer-events: none; }
+    .cover-stamp { position: absolute; right: 30px; bottom: 30px; background: rgba(15,24,21,.82); color: white; border-radius: 18px; padding: 16px 20px; backdrop-filter: blur(12px); }
+    .cover-stamp strong { display: block; font-size: 25px; }
+    .cover-stamp span { font-size: 14px; color: #b8c6bf; letter-spacing: .12em; }
+
+    /* Opening cards */
+    .opening-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 44px; }
+    .opening-head .subtitle { max-width: 480px; font-size: 21px; text-align: right; }
+    .case-card { height: 520px; padding: 0; overflow: hidden; position: relative; background: white; }
+    .case-card .case-visual { height: 270px; overflow: hidden; background: #e7ede8; position: relative; }
+    .case-card .case-visual img { width: 100%; height: 100%; object-fit: cover; }
+    .case-card.education .case-visual img { object-position: 50% 42%; }
+    .case-card.development .case-visual { display: grid; place-items: center; background: linear-gradient(145deg, #17231f, #2b3c34); }
+    .case-card.development .case-visual img { width: 46%; height: 250px; object-fit: cover; object-position: top; border-radius: 18px; border: 5px solid white; box-shadow: 0 18px 35px rgba(0,0,0,.25); }
+    .case-card.video .case-visual img { object-position: 50% 20%; }
+    .case-index { position: absolute; left: 20px; top: 18px; background: rgba(15,24,21,.82); color: white; border-radius: 999px; padding: 7px 13px; font-size: 14px; letter-spacing: .12em; }
+    .case-copy { padding: 25px 27px; }
+    .case-copy h3 { font-size: 29px; margin-bottom: 9px; }
+    .case-copy p { font-size: 19px; line-height: 1.55; color: var(--muted); }
+    .case-copy .case-tag { display: block; margin-top: 18px; font-size: 14px; color: var(--green-dark); letter-spacing: .13em; font-weight: 750; }
+
+    /* Products */
+    .product-intro { display: flex; justify-content: space-between; align-items: end; margin-bottom: 48px; }
+    .product-intro .small { max-width: 450px; text-align: right; }
+    .product-card { height: 455px; padding: 34px; display: flex; flex-direction: column; position: relative; overflow: hidden; }
+    .product-card::after { content: ""; position: absolute; right: -70px; top: -80px; width: 210px; height: 210px; border-radius: 50%; background: var(--halo, #e1f5ec); opacity: .7; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
+    .product-card.compact { height: 455px; padding: 26px; }
+    .product-card.compact .brand { height: 76px; gap: 12px; }
+    .product-card.compact .brand img.icon { width: 54px; height: 54px; }
+    .product-card.compact .brand img.claude-logo { width: 170px; max-height: 52px; }
+    .product-card.compact .brand-name { font-size: 24px; }
+    .product-card.compact h3 { margin-top: 22px; font-size: 23px; line-height: 1.35; }
+    .product-card.compact p { margin-top: 13px; font-size: 16px; line-height: 1.55; }
+    .product-card.compact .product-foot { padding-top: 16px; font-size: 14px; }
+    .brand { height: 95px; display: flex; align-items: center; gap: 18px; position: relative; z-index: 1; }
+    .brand img.icon { width: 66px; height: 66px; }
+    .brand img.claude-logo { width: 225px; max-height: 66px; }
+    .brand-name { font-size: 30px; font-weight: 760; letter-spacing: -.03em; }
+    .product-card h3 { margin-top: 34px; font-size: 30px; }
+    .product-card p { margin-top: 16px; color: var(--muted); font-size: 20px; line-height: 1.65; }
+    .product-foot { margin-top: auto; padding-top: 24px; border-top: 1px solid var(--line); font-size: 16px; color: #405049; line-height: 1.55; }
+    .footnote { position: absolute; left: 78px; bottom: 55px; max-width: 600px; font-size: 14px; line-height: 1.55; color: var(--muted); }
+
+    /* Agent loop */
+    .agent-definition { margin-top: 24px; max-width: 1120px; }
+    .loop {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px;
+      margin-top: 56px; position: relative;
+    }
+    .loop::before { content: ""; position: absolute; left: 8%; right: 8%; top: 48px; height: 2px; background: #c8d8d0; }
+    .loop-step { position: relative; text-align: center; padding: 0 10px; }
+    .loop-dot { width: 96px; height: 96px; margin: 0 auto 22px; border-radius: 50%; background: white; border: 2px solid #cbded4; display: grid; place-items: center; font-size: 27px; font-weight: 780; color: var(--green-dark); position: relative; z-index: 1; box-shadow: 0 8px 25px rgba(27,67,49,.07); }
+    .loop-step h3 { font-size: 24px; }
+    .loop-step p { margin-top: 10px; color: var(--muted); font-size: 17px; line-height: 1.55; }
+    .agent-formula { margin-top: 52px; background: var(--dark); color: white; border-radius: 23px; padding: 24px 30px; display: flex; align-items: center; justify-content: space-between; }
+    .agent-formula strong { font-size: 25px; }
+    .agent-formula span { color: #9fb1a8; font-size: 18px; }
+
+    /* Education */
+    .education-layout { display: grid; grid-template-columns: 39% 57%; gap: 4%; align-items: center; height: 100%; }
+    .education-copy h2 { font-size: 61px; margin-bottom: 25px; }
+    .stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 38px 0 28px; }
+    .stat { border-top: 2px solid #badbcd; padding-top: 16px; }
+    .stat strong { display: block; font-size: 34px; letter-spacing: -.04em; }
+    .stat span { display: block; font-size: 14px; color: var(--muted); margin-top: 6px; line-height: 1.4; }
+    .education-shot { height: 680px; border-radius: 30px; overflow: hidden; box-shadow: 0 25px 60px rgba(28,48,38,.14); border: 1px solid rgba(17,26,23,.12); }
+    .education-shot img { width: 100%; height: 100%; object-fit: cover; }
+    .demo-layout { display: grid; grid-template-columns: 61% 35%; gap: 4%; margin-top: 34px; align-items: center; }
+    .demo-shot { height: 570px; position: relative; overflow: hidden; border-radius: 26px; border: 1px solid var(--line); }
+    .demo-shot img { width: 100%; height: 100%; object-fit: cover; }
+    .demo-live { position: absolute; left: 22px; top: 22px; border-radius: 999px; background: rgba(16,24,21,.85); color: white; padding: 9px 15px; font-size: 14px; letter-spacing: .1em; }
+    .demo-steps { display: grid; gap: 16px; }
+    .demo-step { display: grid; grid-template-columns: 43px 1fr; gap: 15px; align-items: start; }
+    .demo-step .n { width: 40px; height: 40px; border-radius: 13px; background: #e0f3e9; color: var(--green-dark); display: grid; place-items: center; font-weight: 800; }
+    .demo-step h3 { font-size: 23px; }
+    .demo-step p { color: var(--muted); font-size: 17px; margin-top: 4px; }
+    .demo-actions { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
+    .teaching-layout { display: grid; grid-template-columns: 57% 39%; gap: 4%; margin-top: 42px; }
+    .value-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .value-card { padding: 25px; border-radius: 23px; background: white; border: 1px solid var(--line); min-height: 270px; }
+    .value-card .icon-circle { margin-bottom: 25px; }
+    .value-card h3 { font-size: 24px; }
+    .value-card p { color: var(--muted); font-size: 17px; line-height: 1.65; margin-top: 12px; }
+    .boundary { background: #17221e; color: white; border-radius: 26px; padding: 30px; }
+    .boundary h3 { font-size: 28px; margin-bottom: 20px; }
+    .boundary-item { padding: 17px 0; border-top: 1px solid rgba(255,255,255,.13); }
+    .boundary-item strong { display: block; font-size: 19px; margin-bottom: 5px; }
+    .boundary-item span { color: #aebcb5; font-size: 16px; line-height: 1.5; }
+    .source-path { margin-top: 25px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap; font-size: 16px; color: #4d5e56; }
+    .source-path b { padding: 9px 13px; background: #e7eee9; border-radius: 10px; font-weight: 650; }
+
+    /* Development */
+    .vibe-layout { display: grid; grid-template-columns: 52% 40%; gap: 8%; align-items: center; height: 100%; }
+    .vibe-copy h2 { font-size: 62px; margin: 18px 0 26px; }
+    .vibe-quote { margin-top: 38px; border-left: 4px solid var(--green); padding-left: 22px; font-size: 24px; line-height: 1.55; color: #3d4c45; }
+    .phone-wrap { display: flex; justify-content: center; position: relative; }
+    .phone-wrap::before { content: ""; position: absolute; width: 500px; height: 500px; border-radius: 50%; background: #d7eee3; top: 90px; }
+    .phone { width: 340px; height: 680px; border: 10px solid #17211d; border-radius: 48px; overflow: hidden; background: white; position: relative; box-shadow: 0 30px 60px rgba(23,40,31,.25); }
+    .phone img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .phone-label { position: absolute; right: 5px; top: 85px; background: var(--green); color: white; padding: 13px 17px; border-radius: 15px 0 0 15px; font-size: 16px; font-weight: 700; }
+    .compare-layout { display: grid; grid-template-columns: 650px 1fr; gap: 52px; margin-top: 30px; align-items: center; }
+    .compare-shell { position: relative; }
+    .compare {
+      --split: 50%; height: 585px; border-radius: 30px; overflow: hidden; position: relative;
+      background: #e9eceb; border: 1px solid #cad2ce;
+    }
+    .compare img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
+    .compare-after { position: absolute; inset: 0; clip-path: inset(0 calc(100% - var(--split)) 0 0); }
+    .compare-line { position: absolute; top: 0; bottom: 0; left: var(--split); width: 3px; background: var(--green); transform: translateX(-50%); pointer-events: none; }
+    .compare-line::after { content: "↔"; position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 52px; height: 52px; border-radius: 50%; background: var(--green); color: white; display: grid; place-items: center; font-size: 26px; box-shadow: 0 6px 20px rgba(0,0,0,.18); }
+    .compare-label { position: absolute; top: 18px; padding: 8px 13px; border-radius: 999px; background: rgba(16,24,21,.82); color: white; font-size: 14px; z-index: 3; }
+    .compare-label.left { left: 18px; }
+    .compare-label.right { right: 18px; }
+    .compare-range { width: 100%; margin-top: 18px; accent-color: var(--green); cursor: pointer; }
+    .compare-copy h3 { font-size: 37px; line-height: 1.3; }
+    .compare-copy .lead { font-size: 23px; margin-top: 20px; }
+    .result-list { margin-top: 32px; display: grid; gap: 18px; }
+    .result-item { padding: 18px 20px; border-radius: 18px; background: white; border: 1px solid var(--line); }
+    .result-item strong { display: block; font-size: 20px; }
+    .result-item span { display: block; color: var(--muted); font-size: 16px; line-height: 1.55; margin-top: 5px; }
+    .vibe-flow { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-top: 40px; }
+    .vibe-step { min-height: 205px; padding: 24px 20px; background: white; border: 1px solid var(--line); border-radius: 22px; position: relative; }
+    .vibe-step .n { font-size: 15px; color: var(--green-dark); font-weight: 800; letter-spacing: .1em; }
+    .vibe-step h3 { font-size: 23px; margin-top: 24px; }
+    .vibe-step p { font-size: 16px; color: var(--muted); line-height: 1.55; margin-top: 10px; }
+    .roles { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin-top: 26px; }
+    .role { border-radius: 20px; padding: 20px 24px; font-size: 18px; line-height: 1.55; }
+    .role.human { background: #e0f3e9; }
+    .role.agent { background: #e8ebf8; }
+    .role strong { display: block; font-size: 20px; margin-bottom: 5px; }
+    .prompt-example { margin-top: 22px; font-size: 16px; color: #54645c; line-height: 1.6; }
+    .prompt-example b { color: var(--ink); }
+
+    /* Video */
+    .video-head { display: flex; justify-content: space-between; align-items: end; margin-bottom: 18px; }
+    .video-head .small { max-width: 410px; text-align: right; }
+    .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+    .video-card { padding: 0; text-align: left; border: 1px solid var(--line); background: white; border-radius: 25px; overflow: hidden; cursor: pointer; transition: transform .25s, box-shadow .25s; }
+    .video-card:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(25,45,35,.12); }
+    .video-poster { height: 350px; position: relative; overflow: hidden; background: #121a17; }
+    .video-poster img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .play-badge { position: absolute; left: 50%; top: 48%; transform: translate(-50%,-50%); width: 70px; height: 70px; border-radius: 50%; background: rgba(9,168,135,.94); display: grid; place-items: center; box-shadow: 0 8px 28px rgba(0,0,0,.25); }
+    .play-badge::after { content: ""; margin-left: 5px; border-left: 20px solid white; border-top: 12px solid transparent; border-bottom: 12px solid transparent; }
+    .duration { position: absolute; right: 16px; bottom: 16px; padding: 6px 10px; border-radius: 8px; background: rgba(0,0,0,.75); color: white; font-size: 14px; font-variant-numeric: tabular-nums; }
+    .video-copy { padding: 20px 23px 23px; }
+    .video-copy h3 { font-size: 24px; }
+    .video-copy p { color: var(--muted); font-size: 16px; margin-top: 7px; }
+    .workflow-layout { display: grid; grid-template-columns: 34% 61%; gap: 5%; margin-top: 34px; align-items: center; }
+    .workflow-visual { height: 560px; border-radius: 27px; overflow: hidden; position: relative; background: #121a17; }
+    .workflow-visual img { width: 100%; height: 100%; object-fit: cover; object-position: top; }
+    .workflow-visual .image-note { position: absolute; left: 18px; right: 18px; bottom: 18px; background: rgba(15,24,21,.88); color: white; padding: 15px 17px; border-radius: 14px; font-size: 15px; line-height: 1.5; }
+    .workflow-steps { display: grid; gap: 12px; }
+    .workflow-step { display: grid; grid-template-columns: 52px 1fr; gap: 18px; padding: 17px 20px; border-radius: 18px; background: white; border: 1px solid var(--line); }
+    .workflow-step .n { font-size: 26px; color: var(--green); font-weight: 800; }
+    .workflow-step h3 { font-size: 22px; }
+    .workflow-step p { margin-top: 4px; color: var(--muted); font-size: 16px; line-height: 1.5; }
+
+    /* Matrix and action */
+    .matrix { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 36px; background: white; border: 1px solid var(--line); border-radius: 25px; overflow: hidden; font-size: 18px; }
+    .matrix th, .matrix td { padding: 20px 23px; text-align: left; vertical-align: top; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); line-height: 1.5; }
+    .matrix th:last-child, .matrix td:last-child { border-right: 0; }
+    .matrix tr:last-child td { border-bottom: 0; }
+    .matrix thead th { background: #17221e; color: white; font-size: 20px; }
+    .matrix thead th:first-child { width: 16%; background: #26362f; }
+    .matrix tbody td:first-child { color: var(--green-dark); font-weight: 750; background: #f2f6f3; }
+    .matrix-note { margin-top: 20px; font-size: 17px; color: var(--muted); }
+    .action-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 48px; }
+    .action-card { min-height: 390px; padding: 28px; border-radius: 25px; background: white; border: 1px solid var(--line); }
+    .action-card .big-n { font-size: 62px; color: #c8ddd2; font-weight: 800; letter-spacing: -.06em; }
+    .action-card h3 { font-size: 27px; margin-top: 34px; }
+    .action-card p { margin-top: 16px; color: var(--muted); font-size: 18px; line-height: 1.65; }
+    .action-card .example { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--green-dark); font-size: 16px; line-height: 1.55; }
+
+    /* Summary and Q&A */
+    .summary-slide { display: grid; place-items: center; text-align: center; }
+    .summary-inner { max-width: 1260px; }
+    .summary-inner h2 { font-size: 70px; line-height: 1.22; }
+    .summary-inner .lead { margin-top: 28px; font-size: 27px; }
+    .summary-outcomes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 54px; }
+    .summary-outcome { border: 1px solid rgba(255,255,255,.15); background: rgba(255,255,255,.04); border-radius: 22px; padding: 26px; }
+    .summary-outcome strong { display: block; font-size: 26px; }
+    .summary-outcome span { display: block; margin-top: 8px; color: #9eb0a7; font-size: 17px; }
+    .qa-simple { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 90px; }
+    .qa-simple h2 { font-size: 150px; letter-spacing: -.06em; line-height: 1; }
+    .qa-simple .subtitle { margin-top: 34px; font-size: 36px; color: #b7c6be; }
+    .qa-grid { display: grid; grid-template-columns: 56% 44%; height: 100%; }
+    .qa-copy { padding: 90px 80px; display: flex; flex-direction: column; justify-content: center; }
+    .qa-copy h2 { font-size: 112px; letter-spacing: -.06em; }
+    .qa-copy .subtitle { margin-top: 24px; font-size: 28px; }
+    .qa-prompts { margin-top: 54px; display: grid; gap: 13px; }
+    .qa-prompt { padding: 15px 19px; border: 1px solid rgba(255,255,255,.13); border-radius: 14px; color: #b7c6be; font-size: 18px; }
+    .qa-takeaways { margin: 90px 80px 90px 0; border: 1px solid rgba(255,255,255,.14); border-radius: 30px; background: rgba(255,255,255,.04); padding: 50px 46px; display: flex; flex-direction: column; justify-content: center; }
+    .qa-takeaways h3 { font-size: 30px; margin-bottom: 30px; }
+    .takeaway { display: grid; grid-template-columns: 54px 1fr; gap: 20px; align-items: start; padding: 20px 0; border-top: 1px solid rgba(255,255,255,.12); }
+    .takeaway span { font-size: 17px; color: #8fe2c2; font-weight: 800; letter-spacing: .1em; }
+    .takeaway p { font-size: 24px; line-height: 1.5; color: #eef5f0; }
+
+    /* Development evidence */
+    .evidence-layout { display: grid; grid-template-columns: 44% 52%; gap: 4%; margin-top: 28px; }
+    .prompt-box { margin-top: 16px; padding: 15px 18px; border-radius: 15px; background: #123b2e; color: #eaf3ee; }
+    .prompt-box .pb-label { font-size: 12px; letter-spacing: .12em; color: #7fd3ac; font-weight: 800; }
+    .prompt-box .pb-line { margin-top: 8px; font-size: 15px; line-height: 1.6; }
+    .prompt-box .pb-line b { color: #8fe0b8; }
+    .prompt-box .pb-line span { color: #b9cdc3; }
+    .prompt-box .pb-note { margin-top: 8px; margin-bottom: 2px; font-size: 12px; line-height: 1.4; color: #8fa99b; font-style: italic; }
+    .prompt-box a { color: #8fe0b8; font-size: 13px; text-decoration: none; border-bottom: 1px solid #4e8f71; }
+    .prompt-box.light { background: #eef4f0; color: #2c4037; border: 1px solid var(--line); }
+    .prompt-box.light .pb-label { color: var(--green-dark); }
+    .prompt-box.light .pb-line b { color: var(--green-dark); }
+    .prompt-box.light .pb-line span { color: #5a6b61; }
+    .prompt-box.light .pb-note { color: #78897f; }
+    .flow-strip { margin-top: 24px; padding: 15px 18px; border-radius: 15px; background: #eef4f0; border: 1px solid var(--line); font-size: 15px; line-height: 1.65; color: #3e4d45; }
+    .flow-strip b { color: var(--green-dark); }
+    .flow-strip a { display: inline-block; margin-top: 6px; color: var(--green-dark); text-decoration: none; border-bottom: 1px solid #a8d3c0; font-weight: 700; }
+    .flow-strip a:hover { border-bottom-color: var(--green-dark); }
+    .evidence-chain { display: grid; gap: 9px; }
+    .chain-item { display: grid; grid-template-columns: 34px 1fr; gap: 13px; align-items: center; background: white; border: 1px solid var(--line); border-radius: 15px; padding: 11px 15px; }
+    .chain-item .n { width: 32px; height: 32px; border-radius: 10px; background: #e0f3e9; color: var(--green-dark); display: grid; place-items: center; font-size: 15px; font-weight: 800; }
+    .chain-item b { font-size: 19px; }
+    .chain-item span { display: block; color: var(--muted); font-size: 15px; margin-top: 2px; line-height: 1.4; }
+    .evidence-proof { background: var(--dark); color: white; border-radius: 24px; padding: 26px 28px; }
+    .evidence-proof h3 { font-size: 24px; color: #8fe2c2; }
+    .proof-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 18px; }
+    .proof-cell { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 15px; padding: 14px 16px; }
+    .proof-cell strong { display: block; font-size: 27px; color: #9ff0d0; }
+    .proof-cell span { display: block; font-size: 14px; color: #b7c7bf; margin-top: 5px; line-height: 1.45; }
+    .bug-list { margin-top: 18px; display: grid; gap: 10px; }
+    .bug-item { font-size: 15px; color: #c9d7d0; line-height: 1.6; }
+    .bug-item b { color: white; }
+    .proof-shot { height: 122px; border-radius: 15px; overflow: hidden; margin-top: 16px; border: 1px solid rgba(255,255,255,.14); background: #fff; }
+    .proof-shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
+    .repo-line { margin-top: 13px; font-size: 15px; color: #9fb1a8; }
+    .repo-line code { color: #9ff0d0; font-size: 15px; }
+
+    /* Sources */
+    .sources-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px 48px; margin-top: 32px; }
+    .source-group { padding: 22px 24px; border-radius: 20px; background: white; border: 1px solid var(--line); }
+    .source-group h3 { font-size: 22px; margin-bottom: 12px; }
+    .source-group p, .source-group li { font-size: 16px; line-height: 1.58; color: var(--muted); }
+    .source-group ul { margin: 0; padding-left: 20px; }
+    .source-group a { color: var(--green-dark); text-decoration: none; border-bottom: 1px solid #b8d7ca; }
+    .source-group a:hover { border-bottom-color: var(--green-dark); }
+
+    /* Presentation chrome */
+    .controls {
+      position: fixed; left: 50%; bottom: 16px; transform: translateX(-50%);
+      display: flex; gap: 6px; align-items: center; padding: 7px;
+      background: rgba(250,252,250,.92); border: 1px solid rgba(17,26,23,.12);
+      border-radius: 16px; box-shadow: 0 8px 25px rgba(24,40,32,.12);
+      backdrop-filter: blur(14px); z-index: 40;
+    }
+    .control-btn { width: 40px; height: 40px; border: 0; border-radius: 11px; background: transparent; cursor: pointer; display: grid; place-items: center; color: #26372f; }
+    .control-btn:hover { background: #e5ece7; }
+    .control-btn svg { width: 19px; height: 19px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+    .control-divider { width: 1px; height: 24px; background: #d6dfda; margin: 0 3px; }
+    .progress-wrap { position: fixed; left: 0; right: 0; bottom: 0; height: 4px; background: rgba(8,123,101,.12); z-index: 45; }
+    .progress-bar { height: 100%; width: 0; background: var(--green); transition: width .3s; }
+    .notes-panel {
+      position: fixed; right: 18px; top: 18px; bottom: 82px; width: 370px; z-index: 60;
+      background: rgba(251,252,251,.97); border: 1px solid rgba(17,26,23,.13); border-radius: 20px;
+      box-shadow: 0 20px 55px rgba(20,37,29,.18); padding: 24px; display: none;
+    }
+    .notes-panel.open { display: flex; flex-direction: column; }
+    .notes-panel h3 { font-size: 20px; }
+    .notes-time { margin-top: 10px; color: var(--green-dark); font-size: 14px; font-weight: 700; }
+    .notes-text { margin-top: 20px; color: #45564d; font-size: 17px; line-height: 1.75; white-space: pre-line; }
+    .notes-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); line-height: 1.7; }
+    .overview-overlay { position: fixed; inset: 0; z-index: 70; background: #eef2ef; padding: 34px; overflow: auto; display: none; }
+    .overview-overlay.open { display: block; }
+    .overview-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .overview-head h2 { font-size: 30px; }
+    .overview-head-tip { font-size: 15px; color: var(--muted); letter-spacing: .04em; }
+    .overview-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 16px; }
+    .overview-card { min-height: 150px; padding: 20px; border-radius: 18px; border: 1px solid var(--line); background: white; text-align: left; cursor: pointer; }
+    .overview-card:hover, .overview-card.current { border-color: var(--green); box-shadow: 0 0 0 2px rgba(8,168,135,.12); }
+    .overview-card .overview-num { font-size: 13px; color: var(--green-dark); font-weight: 800; }
+    .overview-card h3 { margin-top: 18px; font-size: 19px; line-height: 1.45; }
+    .overview-card p { margin-top: 9px; color: var(--muted); font-size: 13px; }
+    .modal { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 34px; }
+    .modal.open { display: flex; }
+    .modal-backdrop { position: absolute; inset: 0; background: rgba(8,14,11,.86); backdrop-filter: blur(8px); }
+    .modal-shell { position: relative; z-index: 1; max-width: 94vw; max-height: 92vh; display: flex; align-items: center; justify-content: center; }
+    .modal-shell.wide { width: min(1400px, 88vw); height: min(840px, 88vh); }
+    .modal-shell.wide #modalContent { width: 100%; height: 100%; }
+    .modal-shell.wide .modal-close { right: -52px; top: 0; }
+    .modal-close { position: absolute; right: 12px; top: 12px; z-index: 5; width: 42px; height: 42px; border: 0; border-radius: 50%; background: rgba(15,24,21,.8); color: white; cursor: pointer; font-size: 25px; line-height: 1; }
+    .modal-video { max-width: 88vw; max-height: 86vh; border-radius: 18px; background: black; box-shadow: 0 30px 80px rgba(0,0,0,.4); }
+    .modal-iframe { width: 100%; height: 100%; border: 0; border-radius: 18px; background: #f2f3f3; }
+    .modal-file-notice { width: min(900px, 88vw); background: #fbfdfb; color: #17231f; border-radius: 22px; padding: 34px 38px; box-shadow: 0 30px 80px rgba(0,0,0,.35); }
+    .modal-file-notice h3 { font-size: 30px; margin-bottom: 14px; }
+    .modal-file-notice p { font-size: 19px; line-height: 1.7; color: #4a5b52; }
+    .modal-file-notice code { background: #e8f1ec; padding: 3px 9px; border-radius: 7px; font-size: 17px; }
+    .modal-file-notice img { width: 100%; max-height: 330px; object-fit: cover; border-radius: 14px; margin-top: 22px; border: 1px solid var(--line); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    @media (max-width: 1000px) {
+      .modal-shell.wide { width: 94vw; height: 88vh; }
+      .modal-shell.wide .modal-close { right: 10px; top: 10px; }
+    }
+    @media (max-width: 800px) {
+      .controls { bottom: 10px; }
+      .notes-panel { width: calc(100vw - 36px); }
+      .overview-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media print {
+      @page { size: 16.6667in 9.375in; margin: 0; }
+      html, body { overflow: visible; width: auto; height: auto; background: white; }
+      .viewport { position: static; overflow: visible; }
+      .stage { position: static; transform: none !important; width: 1600px; height: auto; box-shadow: none; overflow: visible; }
+      .slide { position: relative; width: 1600px; height: 900px; opacity: 1; visibility: visible; transform: none; page-break-after: always; break-after: page; }
+      .slide:last-child { page-break-after: auto; break-after: auto; }
+      .controls, .progress-wrap, .notes-panel, .overview-overlay, .modal { display: none !important; }
+    }
+
+  </style>
+</head>
+<body data-page-node-id="YDjalM3YNlGWLiwvMHurHy">
+  <main data-page-node-id="8kBs4VXiGFtoAfHBKYc0Xe" class="viewport" aria-label="AI Agent in Practice - Web Presentation">
+    <div data-page-node-id="okt9OoaHA2lRyz9YvEDS90" class="stage" id="stage">
+      <section data-page-node-id="zdgjCnAVj7rLTvAw3xX1cq" class="slide cover active" data-title="AI Agent in Practice" data-section="COURSE PRESENTATION" data-time="0.5 min" data-note="Open with a hook: AI writes text in three seconds, but proving it actually works takes three hours. Today is about those three hours. Then set the theme: three cases, one criterion - can you actually open it?" data-nochrome="">
+        <div data-page-node-id="7N8vPKD3ElPifWtKXIl9wN" class="cover-grid">
+          <div data-page-node-id="ro01RHLgbKB0JW8x3Ys8Pm" class="cover-copy">
+            <div data-page-node-id="gofbvGK37TPkz3SmQsFTp5" class="cover-kicker">COURSE PRESENTATION &nbsp;/&nbsp; AI AGENT IN PRACTICE</div>
+            <div data-page-node-id="gL28QjeNfOO4RlwNtbMwp2" class="cover-title">
+              <span data-page-node-id="XGsyduu2QEAzg8BMYS59aH" class="en">FROM INTENT TO DELIVERY</span>
+              <h1 data-page-node-id="1GAz7AmQO3uGkt7EIVAD50">AI Agent<br data-page-node-id="fhC3RBpujrCjnZ7qCh2G87"><span data-page-node-id="VHeimIuTzQRpuacS1wpEug" class="accent">in Practice</span></h1>
+            </div>
+            <div data-page-node-id="0pBqgnATLsg3Ce2ARrK33H" class="cover-person"><span data-page-node-id="xLw56WEBlthYzvVOnXUMUd" class="line"></span><div data-page-node-id="HLyIu6RYzuL7FOxfuqZ4tE"><strong data-page-node-id="2ZnvWWjwSOG6J5Cspz9znE">HU CHAO</strong><span data-page-node-id="HmkYn1cQY0afF7nGY7njo0">Former software R&D engineer, now an educator</span></div></div>
+          </div>
+          <div data-page-node-id="Vgg8BeFV4LtkuFm3SBzfVk" class="cover-photo">
+            <img data-page-node-id="cover-portrait-restored" src="assets/hu_chao_portrait.jpg" alt="HU CHAO professional portrait">
+          </div>
+        </div>
+      </section>
+
+      <section data-page-node-id="DlA0Lz9qZyxde1KShnF4n1" class="slide" data-title="Three Agent practice directions" data-section="OVERVIEW" data-time="0.5 min" data-note="Lay out the three directions: education, software, short video. Each card says what I built, how the Agent helped, and the value. This is the roadmap; we will go through them one by one.">
+        <div data-page-node-id="bvpH9z1sjGeOVR1O8l9K45" class="opening-head">
+          <div data-page-node-id="QZE2eRuPZGLABwpmDqeIC1"><div data-page-node-id="ocAHQF9rpHtgXzHf0Z0Dsg" class="eyebrow">PART 01 · OVERVIEW</div><h2 data-page-node-id="tIQnicdXUBUIvtg1FXc6DK">I built three things<span data-page-node-id="1DTRDPzpSWIfRCC7GcgS5Q" class="accent"></span><br data-page-node-id="g8IyJKrs3xQcQxbfXCXgl5">Education, Software, Short Video</h2></div>
+          </div>
+        <div data-page-node-id="LhHIMlRV51ZMCsxgJEHeh9" class="grid-3">
+          <article data-page-node-id="5uGGi4eHtlT88qAHmjoUp6" class="card case-card education">
+            <div data-page-node-id="jLFEJth75mij93LAt5Csre" class="case-visual"><img data-page-node-id="1wzDXxRYg4pDojIjb2Qsed" src="assets/human_atlas_p6.png" alt="3D anatomy interactive web case"><span data-page-node-id="5HGAzMCgzCeguzCVZGxI2i" class="case-index">EVIDENCE 01</span></div>
+            <div data-page-node-id="pNPdHAZMQaM667P4smgQzI" class="case-copy"><h3 data-page-node-id="LLtvKVJS0Cp6hsmjibYIDU">01 Interactive Courseware</h3><p data-page-node-id="d477DkMImsDmfrl8qSD2oq">Built a 3D anatomy web app with an Agent;<br data-page-node-id="uceDEjXs1afVLkbkNGqiFc">students dissect structures instead of staring at figures</p><span data-page-node-id="XdFQ4NoaS315d6zWsHPazg" class="case-tag">MAKE IT INTERACTIVE</span></div>
+          </article>
+          <article data-page-node-id="4BumBWI3sghb18TJJCfBTa" class="card case-card development">
+            <div data-page-node-id="UBRl5W0rkDdUENXB2fcOlJ" class="case-visual"><img data-page-node-id="C6M7DMYD7rUjT5B5UBOGAc" src="assets/hanpingyi_after.jpg" alt="HanScreen Chinese overlay translation"><span data-page-node-id="zHXcrHkuH4jOOn9gmIE32U" class="case-index">EVIDENCE 02</span></div>
+            <div data-page-node-id="RLlVBb6W37hlHajshFAlRB" class="case-copy"><h3 data-page-node-id="vtR8RAJaPtXKEEIP8og7YE">02 Practical Tool</h3><p data-page-node-id="em8OOGI9WyoBIGnlvb0hBC">Built HanScreen, a screen translator, with an Agent;<br data-page-node-id="tUeKxCL9BeOKBuMEQn7HFU">from one sentence to an installable APK</p><span data-page-node-id="H5UWOBvn3xg6NWnIhPUg0K" class="case-tag">MAKE IT RUNNABLE</span></div>
+          </article>
+          <article data-page-node-id="JVTgERZfcqGpZY1h3dcyv3" class="card case-card video">
+            <div data-page-node-id="TAaFFDFFN9QUZYsgDSsA8u" class="case-visual"><img data-page-node-id="vQpsxdHkawuDgC0eEm3KHN" src="assets/previews/a4d634ae7078187d04e256b74a28cf88_poster.jpg" alt="Pet story short video case"><span data-page-node-id="GvsAv7NPUVHQXLOZ1oQImo" class="case-index">EVIDENCE 03</span></div>
+            <div data-page-node-id="lvhwye8IjPH5Co91shZ5Qd" class="case-copy"><h3 data-page-node-id="VucDXji6xHhO0Hwre58tK3">03 Video Clips</h3><p data-page-node-id="g3EKGjzeqAsgy84lXGMRqr">Used Agents to organize assets and shots;<br data-page-node-id="VR6CycuoXruUEAXJw6QmXh">three finished clips, three styles</p><span data-page-node-id="0SZ5SppoVhuJZtAHIxY4wn" class="case-tag">MAKE IT PLAYABLE</span></div>
+          </article>
+        </div>
+      </section>
+
+      <section data-page-node-id="KpKXERqPTuA3Ehg1tgOpPq" class="slide" data-title="Four popular tools: each with its strength" data-section="TOOLS" data-time="1.5 min" data-note="Introduce four tools, their strengths and caveats, no ranking. ChatGPT is general and quick to start; Claude Code is engineering-focused; WorkBuddy delivers files for review; Antigravity orchestrates parallel Agents with Artifacts. Close with: pick the handiest, not the strongest.">
+        <div data-page-node-id="nRpi1BWH5SbwwfBZoqiYGy" class="product-intro">
+          <div data-page-node-id="n7uVffCFY9zkQwCjK6qHUe"><div data-page-node-id="5cSK90Y9v1ZiQKO65oLjzb" class="eyebrow">PART 02 · TOOLS</div><h2 data-page-node-id="Q8Rbt7XNkjtt2SDAH9COGU">Four popular tools,<span data-page-node-id="75HvIOpkshlfMtsewt99rF" class="accent">each with its strength</span></h2></div>
+          <p data-page-node-id="nYPE6MB8Pfk2reaA4hwPsb" class="small">No ranking, no favoritism<br data-page-node-id="c35ogwa2R0VKQigssZH8W0">Just strengths and things to watch</p>
+        </div>
+        <div data-page-node-id="WS8sbVl5GYPIqepCtZseo4" class="grid-4">
+          <article data-page-node-id="gGSnPIzt8L6Xl1BLew6AZY" class="card product-card compact">
+            <div data-page-node-id="cRY9FNTBYbRb4s3ZY4wghj" class="brand"><img data-page-node-id="BS4wUBDDmk084H0uWhhUxH" class="icon" src="assets/brand/chatgpt.svg" alt="ChatGPT Logo"><span data-page-node-id="oXrvnVsrfFCeyy92zZeLVJ" class="brand-name">ChatGPT</span></div>
+            <h3 data-page-node-id="CUvnJ113kUTESCcYpwTquI"><span data-page-node-id="rXktiyou4KL9MIeQPnn9cm" class="num">01</span>Generalist: chat about anything</h3><p data-page-node-id="XI33TPz5GOyuy9HtDHoanl"><b data-page-node-id="qicGFEQVy5qxqWqL9bJ2VG">Strength: </b>Versatile, easy to start, rich ecosystem; great for writing and research.<b data-page-node-id="U9NkQo6DCWErqDesk5VxXc">Weakness: deep tasks often need setup; continuous work depends on your plan.</b></p>
+            <div data-page-node-id="8tGhsBdV7XDyd5Gy2XmVDU" class="product-foot">Note: long-task ability varies by version and account</div>
+          </article>
+          <article data-page-node-id="BVvlAY52IoWaUp7GIrfKUJ" class="card product-card compact">
+            <div data-page-node-id="MEvow4ZFoFig5Y59Lc9qYc" class="brand"><img data-page-node-id="y3mySmF4TfTHQdstjBIRCt" class="claude-logo" src="assets/brand/claude.svg" alt="Claude Logo"></div>
+            <h3 data-page-node-id="5W3YTNB1mYHyyaPJB4cGDB"><span data-page-node-id="tdGXshfk0LNuakwM6r2hhJ" class="num">02</span>Engineer: really edits code</h3><p data-page-node-id="Dokea8A9llZrYHvKl9scSy"><b data-page-node-id="7R3JscgDPkD5brvnpCHiVD">Strength: </b>Claude Code reads codebases, edits multiple files, runs tests, then adjusts.<b data-page-node-id="yTmiDfvOzDYszFO3G7ve2b">Weakness: Fairly technical; non-majors need time to ramp up.</b></p>
+            <div data-page-node-id="06a8Qghy1UIZxR6dgyFf0M" class="product-foot">Note: strong for coding, higher barrier for general use</div>
+          </article>
+          <article data-page-node-id="KD62BlR2xQgYc8u4YLE1hR" class="card product-card compact">
+            <div data-page-node-id="Z5MfaNNdcucEFR3fUtSXwP" class="brand"><img data-page-node-id="G98J4T81iX907vQvhVfHkA" class="icon" src="assets/brand/workbuddy.svg" alt="WorkBuddy Logo"><span data-page-node-id="RQZLDQA84FQ2opjjHD2J2M" class="brand-name">WorkBuddy</span></div>
+            <h3 data-page-node-id="MlbTXlbW7jvbA7by3VlQQ5"><span data-page-node-id="cQv0UkcaGzAeG76FXxOoEy" class="num">03</span>Deliverer: finishes the job, leaves files</h3><p data-page-node-id="YXbojT7OOQl52qGLwv1vIM"><b data-page-node-id="cp3u48pQRxh207Q6AVMjAi">Strength: </b>State a goal; it breaks down steps, calls tools, generates files,<b data-page-node-id="s9OsySjBdOlCrwf9ekUjOq">leaving process and results for human review</b>。<b data-page-node-id="gaf8CNwPfLW32PfF109WmE">Weakness: Ecosystem is newer, still growing.</b></p>
+            <div data-page-node-id="LID19TFU8kmtyAEM3F7SuX" class="product-foot">Note: new tool, fast iteration</div>
+          </article>
+          <article data-page-node-id="GshZ393AwgNdIf53Fxu4l9" class="card product-card compact">
+            <div data-page-node-id="4hx5qvMSNw9DqFS3omP9Qk" class="brand"><img data-page-node-id="dJOR5MfRd8nAAUfKYOGsUZ" class="icon" src="assets/brand/antigravity.svg" alt="Google Antigravity Logo"><span data-page-node-id="n1HssMVEwnfynFg8ETK7Ho" class="brand-name">Antigravity</span></div>
+            <h3 data-page-node-id="hQ2lBgF9ZJ9KrDfrrDCFBC"><span data-page-node-id="5ABkNMpkfAB5ZdCRpuckSu" class="num">04</span>Orchestrator: parallel Agents</h3><p data-page-node-id="CMExoTA3b1RBRH6THVSyVR"><b data-page-node-id="Dqz6AWgFC5Izo9d9KiCPzE">Strength: </b>Google's Agent platform with Editor and Manager views; runs multiple Agents in parallel and delivers Artifacts (task lists, screenshots, recordings) for review.<b data-page-node-id="maix7MvK3qd7PFr57PGc5O">Weakness: </b>Geared to development; concepts are newer than typical assistants.</p>
+            <div data-page-node-id="EmJd2bcdrtlNf9gVz1LvtC" class="product-foot">Note: free for individuals, cross-platform</div>
+          </article>
+        </div>
+        
+      </section>
+
+            <section data-page-node-id="mV5H3aeJxyE5m63AGGI2fK" class="slide" data-title="Token: the "unit" of the AI world" data-section="TOKEN 101" data-time="1.5 min" data-note="Add a basic concept so saving Tokens makes sense later. Analogy: computing power is electricity, Token is the kilowatt-hour, the smallest unit a model processes. Chat, generation, and computation all use it. Note the industry trend: this year it became the AI industry's new currency.">
+        <div data-page-node-id="ToDNWLX5JXmKiAdrXAGUdq" class="token-intro">
+          <div data-page-node-id="wdTTkAJyDn1EWULyeMrzGt" class="token-copy">
+            <div data-page-node-id="RqnppJ9XsUJBsDRxHALits" class="eyebrow">PART 03 · TOKEN 101</div>
+            <h2 data-page-node-id="QQlL8bnDTyfxLtsescokwf">Token is the<span data-page-node-id="zMUoyHfI2aoosP0jg8r4jh" class="accent">"kilowatt-hour" of the AI world</span></h2>
+            <p data-page-node-id="IDS65z0K6lGlSMq2aKKDZ8" class="lead">If computing power is the "electricity" of the digital age, then <b data-page-node-id="AT2Ckt3MxgjFmSN1BfeDTc">Token is the unit that meters that power</b>— the smallest unit a model processes. In Chinese we call it a "word unit."</p>
+            <div data-page-node-id="qacCGn6YrHbq4obu5Hrpt1" class="token-quote">Everyday chat, image generation, and model computation all use Token as the common unit. This year, a unit once buried in technical docs is becoming the AI industry's hottest "new currency."</div>
+          </div>
+          <div data-page-node-id="dg9RxyI2afEcGa4hkXUjyH" class="token-visual"><img data-page-node-id="7MHDJjEVsiFPAo0BjeLCqw" src="assets/token-meter.png" alt="Meter metaphor: computing power as electricity, Token as the unit"></div>
+        </div>
+      </section>
+
+<section data-page-node-id="6rvorUAZD07eNo5Mk5h9xW" class="slide" data-title="How to use an Agent, how to save Tokens" data-section="FRAMEWORK" data-time="2 min" data-note="Practical, not abstract. Left: usage - give goal, context, tools, and validation up front so the Agent avoids detours. Right: Tokens - each round resends history and tool returns, so more loops mean longer context and higher cost. Four ways to save: stable prefix, incremental append, narrow scope, caching (per official Prompt Caching docs). No specific prices." data-nochrome="">
+        <div data-page-node-id="r0tvFsKE18XEmsc85orA2x" class="eyebrow">PART 04 · HOW TO USE AN AGENT</div>
+        <h2 data-page-node-id="gfnrL5mjMRtT1nsUnkSE7T">How to use an Agent,<span data-page-node-id="yeohooPnKRLbdLNpactRa5" class="accent">how to save Tokens</span></h2>
+        <p data-page-node-id="qVir9jfotjQ3DtHU1PxQl0" class="lead agent-definition">It is not magic: <b data-page-node-id="O9U81vW7oirPt28ny9nPRn">give goal, materials, tools, criteria</b>, then run, check, iterate. Cost comes from back-and-forth: every round resends history and tool results.</p>
+        <div data-page-node-id="jtJl5KBEpxoISa1IHgsHVs" class="loop">
+          <div data-page-node-id="ml6jnXDYgAxTMIa7NvFMub" class="loop-step"><div data-page-node-id="qe5nEYQEiF4SXPrr5cXlKc" class="loop-dot">01</div><h3 data-page-node-id="xSIFVVhGRl2TylQ1e6z6zd">Set goal</h3><p data-page-node-id="9nHUVThOy03zZ07CUIvB1I">Say what you want<br data-page-node-id="Jx3AVGtvYafsnEFxn9MkC5">and how to accept it</p></div>
+          <div data-page-node-id="javrnEclCCyqzGvCpNXQi0" class="loop-step"><div data-page-node-id="gTAHktc6N4TvWI1qs0qCDT" class="loop-dot">02</div><h3 data-page-node-id="ETwZHJa0YZdUDCLZIBHBrk">Give materials</h3><p data-page-node-id="x5E4g8LGELl5sdK45J9jRU">Real files, screenshots<br data-page-node-id="5UdoKTFRx4obAoN1FgiOod">and constraints</p></div>
+          <div data-page-node-id="dpnq23zQPaVoa8Xz1KbP93" class="loop-step"><div data-page-node-id="1V3rtF5fq1sggSPgdIhcHD" class="loop-dot">03</div><h3 data-page-node-id="5t4paxcnMfvD25FUgHhlLa">Give tools</h3><p data-page-node-id="SZIelWcdPrm5C44FDPqrwR">Search, code, run<br data-page-node-id="PKMTZAZAVUM4uK6Fg0BIJz">only what you need</p></div>
+          <div data-page-node-id="5KqkMjEHN8e06BlHFYHUDD" class="loop-step"><div data-page-node-id="8gBTzYFCs35QqHFjGcI89w" class="loop-dot">04</div><h3 data-page-node-id="ztdiAzwf90CHv1R3ELGKw5">Check result</h3><p data-page-node-id="8RtTsfjY1gT7JPnL9g8IMu">Read real output<br data-page-node-id="5FDfJe3C1xny13JycPLNK2">Locate deviations</p></div>
+          <div data-page-node-id="R8DDSbrDDG6UEvpBE7BSm8" class="loop-step"><div data-page-node-id="he6x250kcj73JxVxXCTBdn" class="loop-dot">05</div><h3 data-page-node-id="GqDCCWHdzqcwGWOY1QnVFe">Iterate</h3><p data-page-node-id="Ddo0BBeKD8VRwdymyTIlS7">Fix only what failed</p></div>
+        </div>
+        <div data-page-node-id="3IjFLSwLKaEXKvmEA6AlyQ" class="token-grid">
+          <div data-page-node-id="6V5TDGtm3kQ6OX7rT8e8sq" class="token-card cost">
+            <h3 data-page-node-id="hELfjE9ZlBVaH4UFmwEZDY">Where Tokens go</h3>
+            <ul data-page-node-id="FUlqLYUgdqdR9QXLXOUdaF">
+              <li data-page-node-id="odiEkfmCABZcqrKuh2jEP0"><b data-page-node-id="FrAPVS1Yj4CBSDdqtfj6t9">Context resent</b>: history, instructions, tool definitions re-enter.</li>
+              <li data-page-node-id="mqM1hrZ5eRLP98sUePUcdq"><b data-page-node-id="duFERBQo0OvvrKQhEgxD4r">Tool returns</b>: files, search results, and logs all count as input.</li>
+              <li data-page-node-id="sf8zCKDA9NEknWiwTbLAGr"><b data-page-node-id="V384bUIbqW5dXLTGC5pWbU">More rounds</b>: more rounds, longer context, higher cost.</li>
+              <li data-page-node-id="oxTjWzBAvaAa03yUx8P7lf"><b data-page-node-id="Pdi8hXh1nkWLdygqstNC8L">Repeated reads</b>: re-reading files or pasting whole blocks wastes tokens.</li>
+            </ul>
+          </div>
+          <div data-page-node-id="jYRs4b2xsxKwCZFz3ddkfF" class="token-card save">
+            <h3 data-page-node-id="eVMTipDaMv1HkX0UFy0TA0">How to save</h3>
+            <ul data-page-node-id="5ulgU7gWCs9Fccluq8Vbsg">
+              <li data-page-node-id="cX0Qbx9o4q2GagW629tODB"><b data-page-node-id="F65cyOploFAS1xrhpC7oC8">Put stable content first</b>: keep instructions consistent to hit caches.</li>
+              <li data-page-node-id="ulWElknFaMXqepAK5yDoRK"><b data-page-node-id="2BoWLDDu3OXahBrDorwTEl">Append, do not rewrite</b>: append new content; do not resend everything.</li>
+              <li data-page-node-id="zfTskQppLc4FvQo4VDCqof"><b data-page-node-id="bL3ZSWcxrf5eKMgTPZA9eO">Narrow scope</b>: give exact paths; avoid full-repo searches.</li>
+              <li data-page-node-id="GTjhh1MExXyTyysPE7F6N2"><b data-page-node-id="P2YrubmGfkmGmchn2NOGFV">Control rounds</b>: change one criterion at a time; cached context is cheaper.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section data-page-node-id="OwWBirqZ8D6Ld8p20zR4NX" class="slide" data-title="Case 01: Build a 3D anatomy teaching web app" data-section="EVIDENCE 01 / EDUCATION" data-time="1.5 min" data-note="Audience is mostly medical students, so start from their pain point: anatomy is hard not for names but for spatial relations - which layer, what neighbors. Textbooks are flat, specimens scarce, so I built a rotatable, clickable, dissectable web app. The real chain with the Agent: define need, find approach, build locally, make resources offline, verify interaction, design class tasks. The numbers 2234 / 15 / 3432 show the scale and can be checked live.">
+        <div data-page-node-id="uQlXYydh9vN9GP6m55opgk" class="education-layout">
+          <div data-page-node-id="k8Fjzgf1733qivIZ50fVeS" class="education-copy">
+            <div data-page-node-id="1PqpBwDALeXD797jdaf5GU" class="eyebrow">PART 05 · EVIDENCE 01 / EDUCATION</div>
+            <h2 data-page-node-id="SuxBkUSufOLyTDFRnWSnpp">Names memorized,<br data-page-node-id="wtguLf5e0FJwcPCXhLaIZ4">but not <span data-page-node-id="NsiGqUoH5L7MEUXLKqFPFK" class="accent">located</span></h2>
+            <p data-page-node-id="DHyEm0UM7gJSBlMtBwqsBf" class="lead">Anatomy is hard not for terms but for spatial relations.<br data-page-node-id="4Npytx5DKoAtG2yQmWX7jg">Flat textbooks and scarce specimens led me to build a 3D anatomy web app.</p>
+            <div data-page-node-id="KdYg2CwTVSjLxANVEdvHlY" class="stat-row">
+              <div data-page-node-id="9QN7QsiP0tixa0LIONqx6O" class="stat"><strong data-page-node-id="387X85wbYliN9KCMfEp1qF" class="number">2,234</strong><span data-page-node-id="FoHKFlx7DQJQu16EKvgxjk">individually selectable<br data-page-node-id="FMmaVfm9BvdcxC1FTLQf4L">anatomical meshes</span></div>
+              <div data-page-node-id="J0stqNC2oiqpdUSzliQyXg" class="stat"><strong data-page-node-id="yGZrxyPEOUVNoynTSjtXb5" class="number">15</strong><span data-page-node-id="6tTDOzK8PU2L65geWcmvnK">switchable<br data-page-node-id="VSUkFDJmlZfrPwblLWcBgV">anatomical systems</span></div>
+              <div data-page-node-id="CNnV00qbtEpMCT8GmL0Do1" class="stat"><strong data-page-node-id="kLeBuyCyBTrQ0mK6QPmjMC" class="number">3,432</strong><span data-page-node-id="zULF9RYqAxHA8YpmI5JFp4">searchable<br data-page-node-id="csKFaNNJnsyk2QdOsm3f97">named concepts</span></div>
+            </div>
+            <div data-page-node-id="JiEpDyYM7bWIlvFuYbqLLb" class="prompt-box"><div data-page-node-id="pZGW890ahIluS4Sji09aea" class="pb-label">How to write the prompt · Code task</div><div data-page-node-id="HGQpXgXqWe13rB14eJuq6u" class="pb-line"><b data-page-node-id="GN1SEdY1RMGlCOZyZJpmtw">Build</b> <span data-page-node-id="AegBOAYGq19jGAm4ZGnEso">rotatable, dissectable web app</span></div><div data-page-node-id="xDVK5qzZAaFGAof451SQo6" class="pb-line"><b data-page-node-id="3UUgB9G60SUwiHASmi79pQ">Users</b> <span data-page-node-id="q3DC706C0k8hADlOI9fi8P">medical students</span></div><div data-page-node-id="HD4212SH2CpaCb0QKNp4qV" class="pb-line"><b data-page-node-id="vHZQcTcG6mkyVZzRl6XHv8">Interact</b> <span data-page-node-id="dvA4UnKY8KuCSrGTunT3SF">rotate · click · layers · explode</span></div><div data-page-node-id="k17wDhBm4cHKrH4lhtgh5A" class="pb-line"><b data-page-node-id="MtXTJO8wvDCe9YZWTPf5pL">Limits</b> <span data-page-node-id="2mDZlOrbY9ygJj8jRbXCIA">browser · offline</span></div></div>
+            <span data-page-node-id="MMn95IczVkybeHOAkpQUuu" class="chip green">Built by me · classroom ready</span>
+            
+          </div>
+          <div data-page-node-id="HKKVPs20lcGt7JkRmLJrPf" class="education-shot"><img data-page-node-id="Zj9bykBfNiPk6GCvv1rC3r" src="assets/human_atlas_p6.png" alt="3D anatomy web app - real local run"></div>
+        </div>
+      </section>
+
+      <section data-page-node-id="tlmKnkPPCwWC025OQILnsQ" class="slide" data-title="Case 01: What it looks like" data-section="EVIDENCE 01 / EDUCATION" data-time="2 min" data-note="Live demo. Explain four features as real learning actions, not software functions. Rotate = see how structures run; switch system = see layers; click organ = check name and description; disassemble = understand components and neighbors. Close with: students go from passive viewing to active finding - that is why I built it.">
+        <div data-page-node-id="zZ5Wpr9jrqhLEB7BrYom0R" class="eyebrow">PART 05 · WHAT IT DOES</div>
+        <h2 data-page-node-id="l2AEzizJvE3oV6CLb2VEWZ">Turn "find it" into <span data-page-node-id="97pFDQ9lC590nCaGOCDIuZ" class="accent">an action</span></h2>
+        <div data-page-node-id="vWFR8Ao7JJLBH35k6qXi5B" class="demo-layout">
+          <div data-page-node-id="bjfM4RV15ipqEJK1yokmMr" class="demo-shot"><img data-page-node-id="STvdt4II3BgMBYPokv8o5G" src="assets/human_atlas_organs_focus.png" alt="3D anatomy web app - organ layers"><span data-page-node-id="5NrhaMJlDiDHYvkJOqsLZ5" class="demo-live">LOCAL / REAL RUNNING</span></div>
+          <div data-page-node-id="nv3Oy7wDhHWArjRkO8IlD9">
+            <div data-page-node-id="uWDfS52y6SjFcheHPDRx48" class="demo-steps">
+              <div data-page-node-id="98ed1ZPPZpBV7X3VzzFIxT" class="demo-step"><span data-page-node-id="mhO633kI1wei4IkZV0YGmz" class="n">1</span><div data-page-node-id="q4ZWpGDdYblSfRkNlSvH2W"><h3 data-page-node-id="sFBX3BJze511EuJoahqHl0">Rotate</h3><p data-page-node-id="7xZB7z7AcEyYx6VLjrr58R">change angles to see how structures run</p></div></div>
+              <div data-page-node-id="heNkwDBP1KZJ8I5aAprn5s" class="demo-step"><span data-page-node-id="AAZ5dXfKAQZlzbJNJMDaJm" class="n">2</span><div data-page-node-id="CVDZhN8RMRaBMPEDJdASsH"><h3 data-page-node-id="5MEVtBHAaCm9UbYCJDBRGf">Switch system</h3><p data-page-node-id="ayclIJPsoRXqyQDBLCFSan">layer by layer, see which system it belongs to</p></div></div>
+              <div data-page-node-id="0Y2RjMGAE00dtU6x5UwbCv" class="demo-step"><span data-page-node-id="0TqCGzhKFfpKvqLoe9rXsB" class="n">3</span><div data-page-node-id="hJacR5AG7aSVTB3Bgj0Bmd"><h3 data-page-node-id="YOgyW1Arlq0jmm8pS6koF2">Click organ</h3><p data-page-node-id="9C2sfBBJ4xzgifcwGEVYWi">click to check name and description</p></div></div>
+              <div data-page-node-id="n99MAzBTO7CTc2A3J4fVFJ" class="demo-step"><span data-page-node-id="AMuA8MAzprOGKenloMDOt9" class="n">4</span><div data-page-node-id="7g0mVnmD241eFOzB233xGF"><h3 data-page-node-id="EPGasxqZF2fFFnToSq7FYG">Disassemble</h3><p data-page-node-id="4XaE7eaMDB7INkwTXj4Fvj">take apart to see components and neighbors</p></div></div>
+            </div>
+            <div data-page-node-id="a2AQMPlL7oObcL4j56cFoJ" class="demo-actions"><button data-page-node-id="nJsDeeDFlAFPaOu5IIvibO" class="primary-btn" data-open-anatomy="">Open 3D interactive demo <span data-page-node-id="XTZy4klumYz2YF76W6e2DF">↗</span></button></div>
+          </div>
+        </div>
+      </section>
+
+      <section data-page-node-id="0leXxUDEHSzATRpK0TTOq6" class="slide" data-title="Case 02: How I built HanScreen" data-section="EVIDENCE 02 / CODING" data-time="1 min" data-note="Case two: the requirement was one sentence - a Korean screen translator with no root and no framework, tap to translate in place, position must not change. Hand that to the Agent: break down tasks, write Kotlin, wire up OCR and translation, package the APK, then iterate with real-device feedback. Value: an ordinary developer can build a tool people actually use daily.">
+        <div data-page-node-id="KayXAv6tIsUNq5BSN6nx7i" class="vibe-layout">
+          <div data-page-node-id="C4uqmBDpHl2hgBDHUBKlFv" class="vibe-copy">
+            <div data-page-node-id="dioFoBPYePpwjrBCJUdz6q" class="eyebrow">PART 06 · EVIDENCE 02 / SOFTWARE</div>
+            <span data-page-node-id="Hh56cMiATisLLsWGAUkPSF" class="chip green">VIBE CODING PRACTICE</span>
+            <h2 data-page-node-id="vWTzclqZVPk2S3cjHR1Af5">One-sentence requirement,<br data-page-node-id="JCvSu1llTAnDvIyF5Iwp2B">handed to an Agent to become <span data-page-node-id="bWtlp8v1t3WRvoavGBubun" class="accent">an App</span></h2>
+            <p data-page-node-id="STYKnABWJZ9eavfoD9PYFI" class="lead">HanScreen: no root, no framework; tap the floating button and the Korean screen is translated in place. From one sentence to an installable APK: rounds of Agent implementation and my real-device feedback.</p>
+            <div data-page-node-id="8RVIn6cRkdLSdYDKIGuqsz" class="prompt-box"><div data-page-node-id="UUDokPJD3spfBBVxg1PeEn" class="pb-label">How to write the prompt · Tool task</div><div data-page-node-id="JzdFKS5592SuIVUEDB8SBT" class="pb-line"><b data-page-node-id="B61UgVm5goWgk8DWil6JD7">User scenario</b> <span data-page-node-id="ApbCCEO03lnqWrVsoylwdj">cannot read Korean apps</span></div><div data-page-node-id="21pUwGvtHqkeG4UWMAW3pR" class="pb-line"><b data-page-node-id="6soIP7JGaefWL7MxjDnYzN">Core action</b> <span data-page-node-id="nwdK9jvaJf8G7AnFWq4mVU">tap floating button, translate Korean in place</span></div><div data-page-node-id="UCJBtc5dEj1r3vBAjK9tib" class="pb-line"><b data-page-node-id="nECZuZpnf0EvGM09auDZVZ">Hard constraints</b> <span data-page-node-id="Iz0tES9AEyLPo3FToK1bsN">no root, no framework, position must not change</span></div><div data-page-node-id="JUic5GBxQesL3DEluGnXel" class="pb-line"><b data-page-node-id="b8hsDfu37zCywaNwqp6reG">Deliverable</b> <span data-page-node-id="tu5XcamEcjs2cNMcAomHvg">installable APK that runs on a real phone</span></div><div data-page-node-id="i1Ds5IUEkZ4SVTaAG5lu3f" class="pb-note">Prompt breakdown: specific constraints mean less rework. Original text on slide 11.</div></div>
+            </div>
+          <div data-page-node-id="PGtv3dylI0TATRU98wBSPg" class="phone-wrap"><div data-page-node-id="uX2jOxVQH4JRvcexak06uK" class="phone"><img data-page-node-id="8KHbwLrH8NOeYrJFMGoO39" src="assets/hanpingyi_after.jpg" alt="HanScreen real Chinese overlay translation"></div><span data-page-node-id="odTmV7VhIDD2CNOIAQYUpq" class="phone-label">Real usage scene</span></div>
+        </div>
+      </section>
+
+      <section data-page-node-id="CaQuMSElWgXjQpBJMP1zcQ" class="slide" data-title="Case 02: Set requirements, then check results" data-section="EVIDENCE 02 / CODING" data-time="1.5 min" data-note="Drag the comparison slider: Chinese overlay on the left, Korean original on the right. Key point: because the requirement says "position must not change," acceptance asks only whether the translation stays in place and avoids covering buttons. Measured data is on the next slide.">
+        <div data-page-node-id="25sG5orFWxh4DAM8wSzFPQ" class="eyebrow">PART 06 · REQUIREMENT FIRST</div>
+        <h2 data-page-node-id="MEPKCkBCZTHAacbp72LJpq">Define "what counts as winning"<span data-page-node-id="NHPi0y4KAYfYtA2W9U55ne" class="accent">before you start</span></h2>
+        <div data-page-node-id="lENh5uFRkIpqs2zh02AkEH" class="compare-layout">
+          <div data-page-node-id="Rh9nWrzifRmCLVwzniWyOC" class="compare-shell">
+            <div data-page-node-id="wm9V5IkXAh3WuZBv4ElrVd" class="compare" id="compare">
+              <img data-page-node-id="yelnJiphSVFSp9RZ2BT9eu" src="assets/hanpingyi_before.jpg" alt="Coupang Eats Korean original interface">
+              <div data-page-node-id="BnTINSQyrMTH0lHcKeU2JE" class="compare-after"><img data-page-node-id="SjTauzCUXLTTwDMbt0jldU" src="assets/hanpingyi_after.jpg" alt="HanScreen Chinese overlay translation"></div>
+              <span data-page-node-id="ebavYVNknUV9fMd0maOfVo" class="compare-label left">Chinese translation</span><span data-page-node-id="hGE8WujKDlPws9aZ2xConL" class="compare-label right">Korean original</span>
+              <div data-page-node-id="BEXBEEmxpP3UoTbrUTF2e5" class="compare-line"></div>
+            </div>
+            <input data-page-node-id="7BnPWrKCkgfoQXhpiEAVtY" class="compare-range" id="compareRange" type="range" min="0" max="100" value="50" aria-label="Drag to compare HanScreen before and after">
+          </div>
+          <div data-page-node-id="YB7yhRgzM48RgWJBChfMAc" class="compare-copy">
+            <h3 data-page-node-id="eSpEPb6Er56FA5HZHMXUYA"><span data-page-node-id="W6krYQaVlhwuPlfhH87idy" class="num">01</span>Requirements first, results follow</h3>
+            <p data-page-node-id="FYAtr1VgaISp0LODuka378" class="lead">Only one check: does the translation stay in place without covering buttons? Drag to compare.</p>
+            <div data-page-node-id="cZ6Aj0YnY0JRUU0a4GvtdJ" class="result-list">
+              <div data-page-node-id="QPiqOwP4tGAMMk6NDiZwaq" class="result-item"><strong data-page-node-id="6Zv70Nn0pPvXcHOqWTefuq"><span data-page-node-id="gI18gIXqmki6nJfsaxTi3k" class="num">01</span>Requirement first</strong><span data-page-node-id="uKMO5qpCBoAYo9VFjZ2eJe">in-place overlay before capture and OCR</span></div>
+              <div data-page-node-id="5zld3UMTjeF06btYogxJDO" class="result-item"><strong data-page-node-id="FX4IsPx50LoNYcJpaZuVoe"><span data-page-node-id="6nUsX7jhof1dyfx3aozpPa" class="num">02</span>Errors are obvious</strong><span data-page-node-id="EDAAw64RnTxJiAbtlFyQFQ">blocking, ghosting, and misplacement show on screen</span></div>
+              <div data-page-node-id="fFMc7k5FKMxkJgp2O8vMUe" class="result-item"><strong data-page-node-id="uAqATcFHmF5tnVZ8LF8pAE"><span data-page-node-id="JtsHUwiuHXX8QFTbVhj9Ek" class="num">03</span>Feedback loops</strong><span data-page-node-id="CYwUIP5L5qd1GsuNKMhtKY">send screenshots back; fix one item per round</span></div>
+            </div>
+            <p data-page-node-id="yE530fw5PgJOAztUnGrKq5" class="caption">Real-device screenshot; data on the next slide.</p>
+          </div>
+        </div>
+      </section>
+
+      <section data-page-node-id="nYkJNAVgQIRB3cqG6zk32q" class="slide" data-title="Case 02: How I got the Agent to write code" data-section="EVIDENCE 02 / CODING" data-time="1.5 min" data-note="Turn the previous judgment into method: step one is not describing features but writing acceptance criteria. The crucial steps are 1 and 4 - criteria first, scenario feedback. Humans set criteria and acceptance; the Agent handles breakdown, coding, running, and fixes. Read the original requirement aloud: only four sentences, yet they set the whole direction.">
+        <div data-page-node-id="vfTHBLxieFn78oRJPJDgeW" class="eyebrow">PART 06 · HOW I PROMPTED</div>
+        <h2 data-page-node-id="wByvlXSO9BxXUeQUicEoQb">Figure out what you want <span data-page-node-id="2y12hB6gNKkQaPo1MVYRoF" class="accent">before the Agent starts</span></h2>
+        <div data-page-node-id="Z52ubVfX8zQSc8TeWDfrCv" class="vibe-flow">
+          <article data-page-node-id="LW2ys7D15OBDgYTr0zsmft" class="vibe-step"><span data-page-node-id="zJXCCH14LWoLOlrEGjoH2t" class="n">01 / Criterion</span><h3 data-page-node-id="xsJ9HUCCbslOq6CDKHXMbN">Set requirements</h3><p data-page-node-id="0X35SvPEY5SezDSOAa1eHQ">I define "what counts as done" before talking features.</p></article>
+          <article data-page-node-id="S45da2tfhNRVDLujDZehXL" class="vibe-step"><span data-page-node-id="JwRdnj2U9yu452rMwk6q80" class="n">02 / Disassemble</span><h3 data-page-node-id="KH9jlaX7fsHqbRHImoiHLj">Agent generates</h3><p data-page-node-id="NsPZYricUWPDC8T3GH3NuH">breaks down tasks, writes code, prepares the runtime.</p></article>
+          <article data-page-node-id="Yd7cqNwBY8MGVbfRniJCR4" class="vibe-step"><span data-page-node-id="f7WLQnOIDeXgSZtJIfMGcx" class="n">03 / Run</span><h3 data-page-node-id="lTz3pK4SUxfwCJijOMwk7b">Run and see</h3><p data-page-node-id="YWwg2vMSL7xx9NqZdlQydY">launch the app and check output in a real scenario.</p></article>
+          <article data-page-node-id="2kFadamcWcQ5V2DebqyRtF" class="vibe-step"><span data-page-node-id="1XnfS9BU1SvcCRYDG9A4sh" class="n">04 / Feedback</span><h3 data-page-node-id="0rw7yLkLoVbv9DOaHevumV">Locate deviations</h3><p data-page-node-id="7xpMALbUWA4H0WyZRaChLM">send back screenshots, errors, and UX issues.</p></article>
+          <article data-page-node-id="ZHMH2XtBE1PC3fYT2gPZjV" class="vibe-step"><span data-page-node-id="N1WktKXdEOSLVYtl6umPaG" class="n">05 / Converge</span><h3 data-page-node-id="obJkjEzf89U6uP4CLCIRNg">Keep iterating</h3><p data-page-node-id="7VRvsxEd9AlyBb1fSquTFQ">fix only what is still wrong, then run again.</p></article>
+        </div>
+        <div data-page-node-id="KUp0HRl4ZMlfqDMbQn3Umf" class="roles">
+          <div data-page-node-id="C4x6bEwZQR1zo1WSUkzDIp" class="role human"><strong data-page-node-id="dBTWJdPIXnkeD8YoGqcJBV">Human: sets criteria, guards acceptance</strong>requirements · UX · risk boundaries · final sign-off</div>
+          <div data-page-node-id="oHMHOdSkxN7O0m1PBmNqqd" class="role agent"><strong data-page-node-id="4dIrWy5aiBNPKw2LjDbXA4">Agent: runs the loop, delivers results</strong>task breakdown · coding · tool calls · bug fixes</div>
+        </div>
+        <p data-page-node-id="5ddMzw9xZ9yDT9jSQxlFwl" class="prompt-example"><b data-page-node-id="cPjxPQnhIHCrKNP7WiUbgD">My original requirement, in full:</b>""Build a real-time Korean screen translator with no root and no framework: tap the floating button to translate the current screen in place, without changing positions; long-press to enable continuous translation.""<br data-page-node-id="yZb9q2cWpRCX8SMWHvwBUX"><b data-page-node-id="YpCEJ8FGegunimG0nkGLQg">Next: </b>how this sentence became a 34MB installable APK with 5 real fixes.</p>
+      </section>
+
+      <section data-page-node-id="99xLMTx2AQxkI0MTC45YP7" class="slide" data-title="Case 03: Three clips made with Agents" data-section="EVIDENCE 03 / VIDEO" data-time="2 min" data-note="Make one thing clear: all three clips were made with Agents, not found online. Click each to preview for ten-ish seconds. The three cases show different Agent uses in creative work: space scene, product ad, character story. Value: one person can deliver three styles of video expression.">
+        <div data-page-node-id="4VOyFYjLd9HIIlPgjRVhKI" class="video-head">
+          <div data-page-node-id="gLu5LCwjaigjA7SEmCb6nR"><div data-page-node-id="4lSfZfWdP99JT9lImp2Rzf" class="eyebrow">PART 07 · EVIDENCE 03 / VIDEO</div><h2 data-page-node-id="t9YicmW6GRRHmrupVMXoM4">Three clips,<br data-page-node-id="CnAGnC5ehQpCr4VAvayjBo"><span data-page-node-id="5kS7k9jjKLgsMCFEIEMRyy" class="accent">all made with Agents</span></h2></div>
+          <p data-page-node-id="B6zrU4LF5UMGOEwX34CnvQ" class="small">three creative styles, one complete workflow<br data-page-node-id="syBw6HOAGD1Exia7tgha7V">click to preview; no need to play in full</p>
+        </div>
+        <div data-page-node-id="RSuDUBwYVdxN1iPbWYPtBE" class="prompt-box" style="margin-top:0; padding:10px 18px"><div data-page-node-id="SHLv7Emyt0FBQqFdVLvjRV" class="pb-label">How to write the prompt · Video task</div><div data-page-node-id="xughbjA3mzN6i4H6bfQjoQ" class="pb-line"><b data-page-node-id="W2LBv8FASOm0F4tFSKZ27W">Reference</b> <span data-page-node-id="O0bM0TD8wEik2p5NC8z6za">scene / product / character setup</span>　<b data-page-node-id="RLmUQdXHgJhDBKq4Rpencu">Action</b> <span data-page-node-id="3NG8eHHeIP1hqGGH0Y9URI">what the subject does, how the camera moves</span></div><div data-page-node-id="AIPkZjGxGLhpr3BBhqj7YO" class="pb-line"><b data-page-node-id="c1H9tGsMKSCFwZpse8aYLm">Style</b> <span data-page-node-id="eYg0jJAPZyIaOCUAxm4Zx4">texture, lighting, pacing, length</span>　<b data-page-node-id="RtVHt3BxBU7nJlEpZgybGr">Selling point</b> <span data-page-node-id="UYnGAbuXWLV7BNBCKmh3yd">which frame shows the product</span></div></div>
+        <div data-page-node-id="yCwMZ7bKxWbA7FU6seVvaC" class="video-grid">
+          <button data-page-node-id="bq9EzLTYjKM5SlH9N3TILK" class="video-card" data-video="assets/1000027671.mp4" data-poster="assets/previews/1000027671_poster.jpg" data-video-title="Space scene: reference to shot">
+            <div data-page-node-id="bAE9zeNKUtQ3taCH9bPGaT" class="video-poster"><img data-page-node-id="r8aShtULh694Yg5qlv5er2" src="assets/previews/1000027671_poster.jpg" alt="Space scene video cover"><span data-page-node-id="bywsR03eKBNliidLHxKeEA" class="play-badge"></span><span data-page-node-id="MOyraZjJonSmQhSkeKPafj" class="duration">00:30</span></div>
+            <div data-page-node-id="ZrPaVVNFSvtWSvkBdYCNpI" class="video-copy"><h3 data-page-node-id="twvnfeYm9OnPU1gJ5OhEHM"><span data-page-node-id="il3zeAIkncfN2grtPkSnDO" class="num">01</span>Space scene</h3><p data-page-node-id="xnwG0peb1NSWPamSgkPs9v">Agent turns references and blockouts into moving shots</p></div>
+          </button>
+          <button data-page-node-id="E1tCz5CA4DduuCyqMfzf09" class="video-card" data-video="assets/1000027669.mp4" data-poster="assets/previews/1000027669_poster.jpg" data-video-title="Product ad: blockout to final">
+            <div data-page-node-id="ABtqxXE5lyDAcgNi24l3Jr" class="video-poster"><img data-page-node-id="LsbQH08Zue6RgpnJedXbOU" src="assets/previews/1000027669_poster.jpg" alt="Robot vacuum product ad cover"><span data-page-node-id="aIkDV8dO6gj1b8YzwEadxI" class="play-badge"></span><span data-page-node-id="2LEeJrxKkOhG5siqkZFgvE" class="duration">00:30</span></div>
+            <div data-page-node-id="fDTtntzIvioNBMUxtd26Ir" class="video-copy"><h3 data-page-node-id="9d1LTlBfXu6Go46pRhd9OY"><span data-page-node-id="d8XKgaBv6zblgFA6mtQp6D" class="num">02</span>Product ad</h3><p data-page-node-id="k4obeHPDMDp3O33LUqHNQI">Agent organizes product shots and scenes into an ad</p></div>
+          </button>
+          <button data-page-node-id="GHf40GBbjXiyQOIiVJZ33O" class="video-card" data-video="assets/a4d634ae7078187d04e256b74a28cf88.mp4" data-poster="assets/previews/a4d634ae7078187d04e256b74a28cf88_poster.jpg" data-video-title="Pet story: character to product placement">
+            <div data-page-node-id="4joOPxopdgRdHJYqmWsmPv" class="video-poster"><img data-page-node-id="0kzrIkRnQn1G1oN1C0CyjP" src="assets/previews/a4d634ae7078187d04e256b74a28cf88_poster.jpg" alt="Pet supplies story video cover"><span data-page-node-id="C9bYdZ73yaHz0QmmbpnSZe" class="play-badge"></span><span data-page-node-id="YurB9TY9IUC0ApKagDTdrG" class="duration">01:08</span></div>
+            <div data-page-node-id="0uLxxDxyuwmuoCYU0fDUI9" class="video-copy"><h3 data-page-node-id="EdAAyWrI1nEptgEmDu4mC7"><span data-page-node-id="soQeGGe0HbPRxKYAI1EYKJ" class="num">03</span>Pet story</h3><p data-page-node-id="NDP9YvG6bLEgYtpiYTvG8z">Agent writes character story and voiceover, places the product</p></div>
+          </button>
+        </div>
+      </section>
+
+      <section data-page-node-id="mz4j43BVPngk7PU4U1MsLv" class="slide" data-title="Case 03: How the clips were made" data-section="EVIDENCE 03 / VIDEO" data-time="1.5 min" data-note="Make the third judgment clear: in the five-step workflow, real time goes to step 3 curation and step 5 review; generation is only one link. Close with: workflow makes lucky hits repeatable, not one-click video.">
+        <div data-page-node-id="TVeh52wVkVoPGCWNp5m0Dc" class="eyebrow">PART 07 · WORKFLOW</div>
+        <h2 data-page-node-id="uPRsFbd2AhhMWVfhsKyONb">Time goes to <span data-page-node-id="hkn1pGiCjnCDuLXQmZErtN" class="accent">curation</span>, not generation</h2>
+        <div data-page-node-id="0Oo27Df4IVGWsxY93VPuh6" class="workflow-layout">
+          <div data-page-node-id="5y89yHzTg7b56FefzKrzoQ" class="workflow-visual"><img data-page-node-id="NhKpVo57tSb2bXOFGXA1zx" src="assets/previews/1000027669_poster.jpg" alt="Product ad: reference materials vs final clip"><div data-page-node-id="czzjymITFV3FNL6yT2L6ER" class="image-note">The footage shows product shots, blockouts, prompts, and final clips - generation is only one part.</div></div>
+          <div data-page-node-id="eSqCQwNoHNn0WFATR4A78p" class="workflow-steps">
+            <article data-page-node-id="QArFuf1MI9N8JRV0RtPA1Z" class="workflow-step"><span data-page-node-id="1q3gnw5vF8xtEGHbmp60R8" class="n">01</span><div data-page-node-id="GEeL3OWEuRVGaB1d1htOox"><h3 data-page-node-id="vdK4X1Df01Ow53gPqiCgEH">Give references</h3><p data-page-node-id="ZmlkMxgfZdsq6ChfhlodzQ">scenes, product shots, character setup, and goals</p></div></article>
+            <article data-page-node-id="8fxNVeUBbWzs4mGL8twUDQ" class="workflow-step"><span data-page-node-id="DQvIJr4dKrUqDiLD7ADmVD" class="n">02</span><div data-page-node-id="FsHtw1Dato2aCpCGCZFBlk"><h3 data-page-node-id="foEcPE4J78MFTpE8O2nJVl">Organize prompts</h3><p data-page-node-id="EPCTRnTBwVugTV2CJN2xoI">action, composition, style, pacing, selling points</p></div></article>
+            <article data-page-node-id="UJxXgZpNPQUIrdZxvYzUCL" class="workflow-step"><span data-page-node-id="jGfEwFWGKMAFtAhkO9nTQD" class="n">03</span><div data-page-node-id="Vr9bfq1y8ZOxQs73OohYrW"><h3 data-page-node-id="hLFW5CxZGS9mz0rLcwZU43">Generate and curate</h3><p data-page-node-id="DBmnGlvkcOEeG8BxmjJGpF">compare candidates, pick the one that works</p></div></article>
+            <article data-page-node-id="REFILFL92beBQPFqstt7S9" class="workflow-step"><span data-page-node-id="XH5fbYrVE81IuQhKFwXGiX" class="n">04</span><div data-page-node-id="XblV92sUJSFSDhWyXxnr0m"><h3 data-page-node-id="o8LIihKmboCJp3dK0UOY7E">Assemble</h3><p data-page-node-id="Cvw2ioILMPf0d4GIdiYYPd">space demos, product ads, and pet stories each have structure</p></div></article>
+            <article data-page-node-id="EXbasOxmKELbVPaNlLKPY3" class="workflow-step"><span data-page-node-id="qZJkZXxGV8hoZxiIn5IeMp" class="n">05</span><div data-page-node-id="1cR4eFiFdBUDOVr44H1PHu"><h3 data-page-node-id="NW9iuMB55izGj9RvwUNsfE">Human review</h3><p data-page-node-id="NujmYPcaEV3x3bT3oUqgnO">check product facts, visual continuity, and pacing</p></div></article>
+          </div>
+        </div>
+        <p data-page-node-id="152ce1yIxUCANauyPsABhn" class="caption">The value of workflow is turning lucky hits into repeatable results. These are takeaways from my three clips; not every shot came from one tool or chain.</p>
+      </section>
+
+      <section data-page-node-id="M4PDEEFqo1VF3iKP92lVsI" class="slide" data-title="Synthesis: three cases, one approach" data-section="PATTERN" data-time="1 min" data-note="This is the synthesis slide. Look past the differences: each case answers "what counts as done" in its own way - education through interaction, software through running, video through viewing. Three common rules: criteria first, Agent runs the loop, results must be inspectable.">
+        <div data-page-node-id="RkCXrjDxBdxOB7OoqI2Dex" class="eyebrow">PART 08 · PATTERN</div>
+        <h2 data-page-node-id="2bAO1iRZwQeAsjSxNo3i0z">Looking back, the three cases are <span data-page-node-id="WBSTdH5xZ1hNLM6cOf768i" class="accent">the same approach</span></h2>
+        <table data-page-node-id="d5hgBKof1uwlG1TNjJN7mA" class="matrix">
+          <thead data-page-node-id="JRx42Z5uyMpMUMqdsTAEqw"><tr data-page-node-id="azzoHxmbVGeMbLspAl0NkY"><th data-page-node-id="JA4GqXnDdGUyHr8yBCfWdd">Dimension</th><th data-page-node-id="aKm87ozkg1RxXqigL4NgkD">Education</th><th data-page-node-id="w1oivRWtdcFc2G7eWibEjC">Software</th><th data-page-node-id="Hv7v0Ydh1J7aory28pciRS">Short video</th></tr></thead>
+          <tbody data-page-node-id="0zwLiCjz51xJ5gz9dUUhqQ">
+            <tr data-page-node-id="XlkVRJIDaSrVS9rRgvREFr"><td data-page-node-id="XxqXJLiMMhQf54UhkODXbS">Set requirements first</td><td data-page-node-id="rYiAdAtGlW6isU8RdM9SpR">can students find and explain a structure themselves</td><td data-page-node-id="dgS7zA9YiOLnpWrhCxS3eW">does the translation stay in place without covering buttons</td><td data-page-node-id="HkxnFJuNOHTCHRibttplgr">do shots clearly convey product and action</td></tr>
+            <tr data-page-node-id="ebB35xI4WGm3p53TVfCut8"><td data-page-node-id="wLl3DPdN7AP9XAgj6jq0f8">What you get</td><td data-page-node-id="esB51JBKDaOevr6wsGmXyl">interactive: rotate, isolate, disassemble</td><td data-page-node-id="yFowzIe5tqxrRe0YKcNAdf">runnable: real-device tests, fixed errors</td><td data-page-node-id="tbc4o3MTPy3ccpK7LLaFBf">watchable: curated clips, human review</td></tr>
+            <tr data-page-node-id="EK9H86a12gzPflOrnjqg6B"><td data-page-node-id="FKBpKGNDWjURpjwWpz5jw3">Agent handles</td><td data-page-node-id="qWDZClTQxzB2nyG34UE6AG">find approaches, build implementation, organize interaction</td><td data-page-node-id="T5vj5TQFl7HRIIC57UMBT8">break down needs, code, run, fix</td><td data-page-node-id="WGlSoFEVFwNA9Rs0Hp8EEW">organize assets, generate candidate shots</td></tr>
+            <tr data-page-node-id="bFz0Blc2BXAymBpPb5dbbM"><td data-page-node-id="eMLk7hfihzhoUd8xKp7pzW">Where humans guard</td><td data-page-node-id="Vc5TrsxLGskGFbtw2kSUNS">teaching accuracy and task design</td><td data-page-node-id="41ovb2QeVFBttYN4RACUEX">overlay, stability, real UX</td><td data-page-node-id="uZUQdQ1B0OItCA1Bju0sbr">curation criteria and product facts</td></tr>
+          </tbody>
+        </table>
+        </section>
+
+      <section data-page-node-id="zSDEfpdQpO72EsuQAAdyD1" class="slide" data-title="Action: three questions before you start" data-section="ACTION" data-time="1.5 min" data-note="Three plain questions: can you define success? Do you have real materials? Does it actually run? These are the screening questions I really used across the three cases. If you cannot answer, do not dig the hole.">
+        <div data-page-node-id="YlYHHhV6GwM6iNmvYcXwB1" class="eyebrow">PART 09 · ACTION</div>
+        <h2 data-page-node-id="R145JoQ8bfItRlwWDbZAOM">I ask myself three questions when screening tasks,<span data-page-node-id="tVKJf2wQJheZwesTmDCblx" class="accent">if I cannot answer, I park it</span></h2>
+        <div data-page-node-id="ZAdWCYQYUvhpdrCzAsyZgU" class="action-grid">
+          <article data-page-node-id="PBNQMdnHE6pgTowcBWgLlq" class="action-card"><div data-page-node-id="OO9sIInxVp8YODzmvqUBab" class="big-n">01</div><h3 data-page-node-id="skl1bYsN0DJJMUVfhU97Nx">Is the requirement clear?</h3><p data-page-node-id="pTk53dxLZwOo0PyyQs2HGh">If you cannot say "what counts as done," the Agent drifts fast.</p><div data-page-node-id="jtxezeMKpFSTJeB5js4BhI" class="example">Testable: "translation overlays source without covering buttons"<br data-page-node-id="gWI2EpuDckAZBcFLzU9wPy">Untestable: "make it translate better"</div></article>
+          <article data-page-node-id="JfkRm2cbbVLA8CwKQNbzgs" class="action-card"><div data-page-node-id="aBgT9GSp0hCuahVi4UaaFu" class="big-n">02</div><h3 data-page-node-id="ctXL6f5dno46Vc9MOKt1Kw">Do you have real materials?</h3><p data-page-node-id="TP2vNVOFADehkc9DCM5AGt">Real screenshots, files, and samples beat a pile of adjectives.</p><div data-page-node-id="WE0UNFm6UKLmTDdl2x6zYQ" class="example">e. g. test on a real food-delivery page, not demo data</div></article>
+          <article data-page-node-id="zKbZWdyjmM2P5ffukdi5Ue" class="action-card"><div data-page-node-id="X8lY4vJ9LLSt4b3UTPqVd4" class="big-n">03</div><h3 data-page-node-id="pxGhplLIu4Gm7iHg5H9dmP">Does it produce a result?</h3><p data-page-node-id="6HOQofuuDCim5UzZBdq9Fu">It should launch, click, play, and list failures clearly.</p><div data-page-node-id="tJ5laRL1xroxHeqmcloN79" class="example">e. g. 12/12 segments translated / 5 issues fixed / 34MB installable</div></article>
+          
+        </div>
+      </section>
+
+      <section data-page-node-id="bbXOAUpnfOHjLnEB9UYTqZ" class="slide dark qa-slide" data-title="Q&amp; A" data-section="DISCUSSION" data-time="~5 min" data-note="Q&A, about five minutes. The slide only has Q&A and thanks; jump back to evidence slides to replay demos as needed." data-nochrome="">
+        <div data-page-node-id="Hhp5NPUIFgkTlWCCGjFu1E" class="qa-simple">
+          <div data-page-node-id="WMe8wE2eM8lXgkzyWofxzY" class="eyebrow">Discussion</div>
+          <h2 data-page-node-id="61D0gu8KhXQhLz9ZXNae7A">Q&amp; A</h2>
+          <p data-page-node-id="455CRMtZk1t4LenPq7BCHo" class="subtitle">Thank you. Questions and discussion are welcome.</p>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <nav data-page-node-id="8qHGHKoIfNpWoSfElRK5Gi" class="controls" aria-label="Presentation controls">
+    <button data-page-node-id="dlinrgiYQkxp0pxq5K6zNT" class="control-btn" id="prevBtn" aria-label="Previous slide" title="Previous slide"><svg data-page-node-id="MGQ36BqfJQb03o80O30kdT" viewBox="0 0 24 24"><path data-page-node-id="alr7HNapD5dZJKns9Dqu23" d="m15 18-6-6 6-6"></path></svg></button>
+    <button data-page-node-id="S4BnGTSaGj7tAEYNA7WDNy" class="control-btn" id="nextBtn" aria-label="Next slide" title="Next slide"><svg data-page-node-id="sEbBRcfWliK09Y7NCmNQJI" viewBox="0 0 24 24"><path data-page-node-id="XirGKbt5WVLou8vID1xcqr" d="m9 18 6-6-6-6"></path></svg></button>
+    <span data-page-node-id="p4jpyTi1q21CeI1C82He7S" class="control-divider"></span>
+    <button data-page-node-id="pbhnVoRosBDA2wsZNPX4mv" class="control-btn" id="overviewBtn" aria-label="Slide Overview" title="Slide Overview (O)"><svg data-page-node-id="el4ThKN8snez1n7BUvbFlD" viewBox="0 0 24 24"><rect data-page-node-id="LcD8DuNH3SJFPTZdLmpRGe" x="3" y="3" width="7" height="7" rx="1"></rect><rect data-page-node-id="ymebVra2Mm0KOQIDlQP9RR" x="14" y="3" width="7" height="7" rx="1"></rect><rect data-page-node-id="UfrDvT1TNrJLTLs6zwKZ2q" x="3" y="14" width="7" height="7" rx="1"></rect><rect data-page-node-id="eyB9kOgfIwiqBS1dv5aVCf" x="14" y="14" width="7" height="7" rx="1"></rect></svg></button>
+    <button data-page-node-id="SNDElhG3EbHkmplXfz70n5" class="control-btn" id="notesBtn" aria-label="Speaker notes" title="Speaker notes (N)"><svg data-page-node-id="tgH7yHxgK2K8EdSXpydKOu" viewBox="0 0 24 24"><path data-page-node-id="D98n7PRwcoJ67ZaPUsrEiz" d="M4 4h16v16H4z"></path><path data-page-node-id="UUfjdFyjbhYLckeEiKXwDG" d="M8 8h8M8 12h8M8 16h5"></path></svg></button>
+    <button data-page-node-id="imPrD5yDf07KtK8iV3wx8X" class="control-btn" id="fullscreenBtn" aria-label="Fullscreen" title="Fullscreen (F)"><svg data-page-node-id="ANynweRC5sNRFzh7wJGXtv" viewBox="0 0 24 24"><path data-page-node-id="SiEFfL7lpPo7uaqUAl01aE" d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"></path></svg></button>
+  </nav>
+  <div data-page-node-id="Jfq4CNbNw363ArU3fYyj9E" class="progress-wrap"><div data-page-node-id="pxBwPbb4YrYEANv26FSiM1" class="progress-bar" id="progressBar"></div></div>
+  <div data-page-node-id="ymrJY7l7ZZFSniwqZ5QAvT" class="sr-only" id="announcer" aria-live="polite"></div>
+
+  <aside data-page-node-id="eeYpOritbObG3UFbfzPNd9" class="notes-panel" id="notesPanel" aria-label="Speaker Notes">
+    <h3 data-page-node-id="oXUDjBD7gnFE9aUaMbLSkR" id="notesTitle">Speaker notes</h3><div data-page-node-id="bBST7vblUJQxIvxV4fNLr8" class="notes-time" id="notesTime"></div><div data-page-node-id="QicX2Ew2ifA3n8hFTrxaBt" class="notes-text" id="notesText"></div><div data-page-node-id="cmHi3BkElEy5HXTVIgWWzP" class="notes-footer">Shortcuts: ← → Navigate · F Fullscreen · O Overview · N Notes on/off · Esc close modal<br data-page-node-id="kqJqJpO9r82LcFsQHVKXXQ">Speaker only</div>
+  </aside>
+
+  <section data-page-node-id="O2rcmDMND0RuxsGGW6EVOY" class="overview-overlay" id="overviewOverlay" aria-label="Slide Overview">
+    <div data-page-node-id="iDzyxzjWu2esuIjpid2fSu" class="overview-head"><h2 data-page-node-id="3gF6ClH5oIYgteSGQ0NgZU">Slide Overview</h2><div data-page-node-id="U85kmNCEuKS1CNourJ5vKJ" style="display: flex; align-items: center; gap:22px"><span data-page-node-id="i4TxWziV6O7TIICdFEmFar" class="overview-head-tip">Within 30 minutes (incl. Q&A) · 15 slides · Click a card to jump · Esc to return · ← → Navigate · N Notes</span><button data-page-node-id="ndkfqR9VeV9sA9dwDo7e3d" class="ghost-btn" id="overviewClose">Back to Presentation</button></div></div>
+    <div data-page-node-id="blK9yX9Oh52SMbEyC4W96i" class="overview-grid" id="overviewGrid"></div>
+  </section>
+
+  <div data-page-node-id="3BYLpNakMrnTPBgRnDHsSG" class="modal" id="mediaModal" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Case demo">
+    <div data-page-node-id="GZToKA0ewRpOLKLT84dtWM" class="modal-backdrop" data-close-modal=""></div>
+    <div data-page-node-id="UeLg7GSyC187Qq8JB4skS7" class="modal-shell" id="modalShell"><button data-page-node-id="zce1rnIZ9flmHD0ILjAg7o" class="modal-close" data-close-modal="" aria-label="Close">×</button><div data-page-node-id="hXOY31igIPvTAzftJ0fMXK" id="modalContent"></div></div>
+  </div>
+
+  <script data-page-node-id="BlgBgyPEuhZBLV0xJRJU5P" data-pnid-children="Pa4fSNGYgJqBEc0d0vgWye">
+    (() => {
+      const slides = Array.from(document.querySelectorAll('.slide'));
+      const total = slides.length;
+      let current = 0;
+      let modalOpen = false;
+      let lastFocus = null;
+      const progressBar = document.getElementById('progressBar');
+      const announcer = document.getElementById('announcer');
+      const notesPanel = document.getElementById('notesPanel');
+      const notesTitle = document.getElementById('notesTitle');
+      const notesTime = document.getElementById('notesTime');
+      const notesText = document.getElementById('notesText');
+      const overviewOverlay = document.getElementById('overviewOverlay');
+      const overviewGrid = document.getElementById('overviewGrid');
+      const modal = document.getElementById('mediaModal');
+      const modalShell = document.getElementById('modalShell');
+      const modalContent = document.getElementById('modalContent');
+
+      slides.forEach((slide, index) => {
+        if (!slide.hasAttribute('data-nochrome')) {
+          const meta = document.createElement('div');
+          meta.className = 'slide-meta';
+          const section = document.createElement('span');
+          section.textContent = slide.dataset.section || 'AI AGENT';
+          const number = document.createElement('span');
+          number.textContent = String(index + 1).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+          meta.append(section, number);
+          slide.appendChild(meta);
+        }
+        const card = document.createElement('button');
+        card.className = 'overview-card';
+        card.innerHTML = '<span class="overview-num">' + String(index + 1).padStart(2, '0') + '</span><h3></h3><p></p>';
+        card.querySelector('h3').textContent = slide.dataset.title;
+        card.querySelector('p').textContent = slide.dataset.time;
+        card.addEventListener('click', () => { closeOverview(); showSlide(index); });
+        overviewGrid.appendChild(card);
+      });
+
+      function fitStage() {
+        const scale = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
+        document.documentElement.style.setProperty('--scale', Math.max(.25, scale));
+      }
+
+      function showSlide(index) {
+        current = Math.max(0, Math.min(total - 1, index));
+        slides.forEach((slide, i) => slide.classList.toggle('active', i === current));
+        const slide = slides[current];
+        progressBar.style.width = ((current + 1) / total * 100) + '%';
+        announcer.textContent = 'Slide ' + (current + 1) + ' of ' + total + ': ' + slide.dataset.title;
+        notesTitle.textContent = slide.dataset.title;
+        notesTime.textContent = 'Suggested time: ' + slide.dataset.time;
+        notesText.textContent = slide.dataset.note;
+        history.replaceState(null, '', '#slide-' + (current + 1));
+        Array.from(overviewGrid.children).forEach((card, i) => card.classList.toggle('current', i === current));
+      }
+
+      function next() { showSlide(current + 1); }
+      function prev() { showSlide(current - 1); }
+      function toggleNotes() { notesPanel.classList.toggle('open'); }
+      function openOverview() { overviewOverlay.classList.add('open'); }
+      function closeOverview() { overviewOverlay.classList.remove('open'); }
+      function toggleOverview() { overviewOverlay.classList.toggle('open'); }
+      async function toggleFullscreen() {
+        try {
+          if (!document.fullscreenElement) await document.documentElement.requestFullscreen();
+          else await document.exitFullscreen();
+        } catch (error) { console.warn('Fullscreen unavailable:', error); }
+      }
+
+      function openModal(kind, data = {}) {
+        lastFocus = document.activeElement;
+        modalOpen = true;
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        modalContent.innerHTML = '';
+        modalShell.classList.toggle('wide', kind === 'anatomy');
+        if (kind === 'anatomy') {
+          if (location.protocol === 'file:') {
+            const notice = document.createElement('div');
+            notice.className = 'modal-file-notice';
+            notice.innerHTML = '<h3>3D demo needs a local server</h3><p>You opened this file directly, so the browser blocks the 3D model. Double-click <code>start.bat</code> (or run <code>python start.py</code>), then open this page from the local address to rotate, click, and dissect organs live.</p><img src="assets/human_atlas_organs.png" alt="Static preview of 3D anatomy organ layers">';
+            modalContent.appendChild(notice);
+          } else {
+            const iframe = document.createElement('iframe');
+            iframe.className = 'modal-iframe';
+            iframe.src = 'assets/human-atlas/index.html';
+            iframe.title = '3D interactive anatomy demo';
+            iframe.allow = 'fullscreen';
+            modalContent.appendChild(iframe);
+          }
+        } else {
+          const video = document.createElement('video');
+          video.className = 'modal-video';
+          video.controls = true;
+          video.autoplay = true;
+          video.playsInline = true;
+          video.preload = 'metadata';
+          video.poster = data.poster;
+          video.setAttribute('aria-label', data.title);
+          const source = document.createElement('source');
+          source.src = data.src;
+          source.type = 'video/mp4';
+          video.appendChild(source);
+          modalContent.appendChild(video);
+          video.play().catch(() => {});
+        }
+        modal.querySelector('.modal-close').focus();
+      }
+
+      function closeModal() {
+        const video = modalContent.querySelector('video');
+        if (video) video.pause();
+        modalContent.innerHTML = '';
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+        modalOpen = false;
+        if (lastFocus) lastFocus.focus();
+      }
+
+      document.getElementById('nextBtn').addEventListener('click', next);
+      document.getElementById('prevBtn').addEventListener('click', prev);
+      document.getElementById('notesBtn').addEventListener('click', toggleNotes);
+      document.getElementById('overviewBtn').addEventListener('click', toggleOverview);
+      document.getElementById('overviewClose').addEventListener('click', closeOverview);
+      document.getElementById('fullscreenBtn').addEventListener('click', toggleFullscreen);
+      document.querySelectorAll('[data-open-anatomy]').forEach(button => button.addEventListener('click', () => openModal('anatomy')));
+      document.querySelectorAll('[data-video]').forEach(button => button.addEventListener('click', () => openModal('video', { src: button.dataset.video, poster: button.dataset.poster, title: button.dataset.videoTitle })));
+      document.querySelectorAll('[data-close-modal]').forEach(element => element.addEventListener('click', closeModal));
+
+      const compareRange = document.getElementById('compareRange');
+      compareRange.addEventListener('input', event => document.getElementById('compare').style.setProperty('--split', event.target.value + '%'));
+
+      document.addEventListener('keydown', event => {
+        if (modalOpen) {
+          if (event.key === 'Escape') closeModal();
+          return;
+        }
+        if (overviewOverlay.classList.contains('open')) {
+          if (event.key === 'Escape' || event.key.toLowerCase() === 'o') closeOverview();
+          return;
+        }
+        const target = event.target;
+        if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement || target instanceof HTMLSelectElement) return;
+        if (['ArrowRight', 'PageDown', ' '].includes(event.key)) { event.preventDefault(); next(); }
+        else if (['ArrowLeft', 'PageUp'].includes(event.key)) { event.preventDefault(); prev(); }
+        else if (event.key === 'Home') showSlide(0);
+        else if (event.key === 'End') showSlide(total - 1);
+        else if (event.key.toLowerCase() === 'f') toggleFullscreen();
+        else if (event.key.toLowerCase() === 'o') openOverview();
+        else if (event.key.toLowerCase() === 'n') toggleNotes();
+        else if (event.key === 'Escape') notesPanel.classList.remove('open');
+      });
+
+      let touchStartX = 0;
+      let touchStartY = 0;
+      document.addEventListener('touchstart', event => {
+        if (modalOpen || event.target.closest('button, input, iframe, video')) return;
+        touchStartX = event.changedTouches[0].clientX;
+        touchStartY = event.changedTouches[0].clientY;
+      }, { passive: true });
+      document.addEventListener('touchend', event => {
+        if (modalOpen || event.target.closest('button, input, iframe, video')) return;
+        const dx = event.changedTouches[0].clientX - touchStartX;
+        const dy = event.changedTouches[0].clientY - touchStartY;
+        if (Math.abs(dx) > 70 && Math.abs(dx) > Math.abs(dy) * 1.5) dx < 0 ? next() : prev();
+      }, { passive: true });
+
+      window.addEventListener('resize', fitStage);
+      window.addEventListener('hashchange', () => {
+        const m = location.hash.match(/#slide-(\d+)/);
+        if (m) showSlide(Number(m[1]) - 1);
+      });
+      fitStage();
+      const match = location.hash.match(/#slide-(\d+)/);
+      showSlide(match ? Number(match[1]) - 1 : 0);
+    })();
+  </script>
+
+
+</body></html>
